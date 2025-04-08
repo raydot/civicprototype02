@@ -1,4 +1,4 @@
-### Product Requirements (updated 1/4/25)
+### Product Requirements (updated 4/8/25)
 
 Product Requirements
 **1. Purpose & Value Proposition**
@@ -18,6 +18,7 @@ VoterPrime is a nonpartisan primer that makes it easy for US citizens to make co
 
 - **Shifting Voter Engagement:** Citizens who engage with democracy based on their core values—rather than partisan outrage—will push politicians toward problem-solving policies.
 - **Targeting Disengaged Voters:** This solution is designed for disengaged voters, especially younger demographics, who prefer **tech-driven, mobile-first tools** over traditional political content.
+- **Evolving Policy Understanding:** The system's understanding of policy terms and their relationships should improve over time through expert curation and user feedback.
 
 ---
 
@@ -27,7 +28,9 @@ VoterPrime is a nonpartisan primer that makes it easy for US citizens to make co
 
 ---
 
-**4. Inputs & User Interaction4.1. Input Fields**
+**4. Inputs & User Interaction**
+
+**4.1. Input Fields**
 
 - **Mode Selection:**
     - **Options:** "Current Date" or "DEMO: November 2024 Election."
@@ -40,11 +43,57 @@ VoterPrime is a nonpartisan primer that makes it easy for US citizens to make co
     - Users can enter multiple concerns and reorder them via drag-and-drop.
     - "Did we get this right? - input box with SUBMIT for clarifications - initiates updated evaluation and mapping
     - Yes - show me recommendations - initiates processing
-    **4.2. Real-Time Editing & Feedback**
+
+**4.2. Real-Time Editing & Feedback**
+
 - **Dynamic Updates:** Inputs (zip code or priorities) trigger **immediate refreshes** in recommendations.
 - **Conflict Detection:** NLP flags contradictory or ambiguous entries and prompts users for clarification.
 - **Test Personas:**
     - Buttons for loading **predefined personas** or generating a **random persona** (populating zip code and priorities, and setting mode to demo).
+
+---
+
+**4. Policy Mapping System**
+
+**4.1. External Policy Terminology File**
+- Policy mappings must be maintained in `src/config/issueTerminology.json`
+- This file serves as the single source of truth for policy term mappings
+- File structure must support:
+  - Standard policy terms
+  - Plain language alternatives
+  - Contextual relationships
+  - Nuanced distinctions (e.g., "fair hiring" vs "affirmative action")
+  - Confidence weights
+  - Potential conflicts
+
+**4.2. Expert Curation**
+- Policy experts must be able to review and update terminology mappings
+- Updates should focus on:
+  - Adding new policy terms
+  - Refining existing mappings
+  - Improving nuanced distinctions
+  - Adding contextual relationships
+  - Resolving ambiguities
+
+**4.3. Learning System**
+- The system must log and learn from:
+  - User inputs and their mapped terms
+  - User clarifications and corrections
+  - Detected ambiguities and conflicts
+  - Success rates of mappings
+- Learning outcomes should:
+  - Suggest new policy terms
+  - Identify gaps in terminology
+  - Highlight common user phrasings
+  - Track confidence scores
+  - Flag potential improvements
+
+**4.4. Continuous Improvement**
+- Regular review cycles for terminology updates
+- Data-driven recommendations for mapping improvements
+- Version control for terminology file
+- Documentation of mapping changes
+- Validation system for updates
 
 ---
 
@@ -178,18 +227,24 @@ All user results are displayed in a single, scrollable dashboard, including:
 
 ---
 
-**7. Application Interface Components7.1. API Connection Verification**
+**7. Application Interface Components**
+
+**7.1. API Connection Verification**
 
 - **API Connection Buttons:**
     - **Check Google Civic API Connection**
     - **Check FEC API Connection**
     - **Visual Indicators:** Green checkmark (success) or red alert (failure).
     - **Toast Notifications:** Display connection status details.
-    **7.2. Debug Tools**
+
+**7.2. Debug Tools**
+
 - **Terminology Debug Tool:**
     - Tests the **terminology mapping system** (via `src/config/issueTerminology.json`).
     - Displays **matched categories, confidence scores, and recognized standardized terms**.
-    **7.3. Email Generation Logic**
+
+**7.3. Email Generation Logic**
+
 - **Evaluation of Elected Officials:**
     - Officials are categorized into three groups:
         1. **Aligned Officials:** Likely to support user's priorities.
@@ -214,7 +269,9 @@ All user results are displayed in a single, scrollable dashboard, including:
 
 ---
 
-**9. Data Integration & Sources9.1. Primary Data Sources**
+**9. Data Integration & Sources**
+
+**9.1. Primary Data Sources**
 
 - **FEC API:**
     - **Candidate profiles, finance data, and official records.**
@@ -222,7 +279,10 @@ All user results are displayed in a single, scrollable dashboard, including:
 - **Google Civic API:**
     - **Provides ballot options & measures.**
     - **Used for local, state, and national election recommendations.**
-    - **API keys stored securely.9.2. External Links & Curated Content**
+    - **API keys stored securely.**
+
+**9.2. External Links & Curated Content**
+
 - **Interest Groups:**
     - Uses **HUD interest group** database ([HUD](https://www.hud.gov/program_offices/gov_relations/oirpublicinterestgroups)).
 - **Petition Sites:**
@@ -230,12 +290,16 @@ All user results are displayed in a single, scrollable dashboard, including:
 
 ---
 
-**10. System Architecture & Technical Considerations10.1. Front-End**
+**10. System Architecture & Technical Considerations**
+
+**10.1. Front-End**
 
 - **User Interface:**
     - **Clean, intuitive, mobile-first** design.
     - **Real-time dashboard updates** and **accessibility features**.
-    **10.2. Back-End**
+
+**10.2. Back-End**
+
 - **Real-Time Processing:**
     - **Zip code and priorities** trigger **immediate refreshes.**
 - **Scalability:**
