@@ -1,0 +1,588 @@
+{
+  "fallback": {
+    "standardTerm": "Clarification Needed",
+    "plainEnglish": "Can you please clarify your stance on [user's language]?",
+    "nuance": {}
+  },
+  "taxCutsForMiddleClass": {
+    "plainLanguage": [
+      "middle class tax cuts",
+      "tax cuts for working families",
+      "tax breaks for middle class",
+      "reduce taxes for middle class",
+      "tax relief for middle class",
+      "help working families"
+    ],
+    "inclusionWords": [
+      "middle class",
+      "working families"
+    ],
+    "standardTerm": "Middle Class Tax Relief",
+    "plainEnglish": "I want tax cuts that help working families and the middle class keep more of their money.",
+    "nuance": {
+      "middle_class_support": 0.8,
+      "tax_burden_reduction": 0.7
+    },
+    "nuancedMapping": {
+      "supports_middle_class_relief": true,
+      "opposes_tax_increases": true,
+      "supports_working_families": true,
+      "explicitly_mentions_middle_class": false,
+      "reasoning": "The voter expresses support for tax cuts that benefit the middle class and working families."
+    }
+  },
+  "taxCutsForWealthy": {
+    "plainLanguage": [
+      "tax cuts for job creators",
+      "business tax relief",
+      "corporate tax cuts",
+      "wealth tax opposition",
+      "capital gains tax",
+      "estate tax relief",
+      "tax cuts create jobs",
+      "trickle down",
+      "tax cuts stimulate economy"
+    ],
+    "standardTerm": "Upper Income Tax Relief",
+    "plainEnglish": "I support tax cuts for high earners and businesses to stimulate economic growth.",
+    "nuance": {
+      "business_growth": 0.6,
+      "job_creation": 0.5,
+      "support_for_high_income": 0.7,
+      "upper_tax_relief_opposition": -0.7
+    },
+    "nuancedMapping": {
+      "supports_business_tax_cuts": true,
+      "believes_in_trickle_down": true,
+      "mentions_job_creation": false,
+      "explicitly_mentions_wealthy": false,
+      "reasoning": "The voter supports tax cuts for high earners and businesses, believing they stimulate economic growth."
+    }
+  },
+  "taxWealthyMore": {
+    "plainLanguage": [
+      "tax the rich",
+      "wealth tax",
+      "millionaire tax",
+      "billionaire tax",
+      "fair share taxes",
+      "ultra wealthy taxes",
+      "no tax cuts wealthy",
+      "corporate tax loopholes",
+      "tax the 1%",
+      "progressive taxation",
+      "make rich pay more"
+    ],
+    "standardTerm": "Progressive Taxation and Wealth Tax",
+    "plainEnglish": "I want the ultra-wealthy and corporations to pay their fair share in taxes.",
+    "nuance": {
+      "progressive_taxation": 0.9,
+      "wealth_redistribution": 0.8,
+      "opposition_to_progressive_tax": -0.8
+    },
+    "nuancedMapping": {
+      "supports_taxing_wealthy": true,
+      "supports_corporate_taxation": true,
+      "mentions_fair_share": false,
+      "explicitly_against_tax_cuts_for_wealthy": false,
+      "reasoning": "The voter supports higher taxes on the wealthy and corporations, believing they should pay their fair share."
+    }
+  },
+  "economy": {
+    "plainLanguage": [
+      "inflation",
+      "job security",
+      "cost of living",
+      "strong economy",
+      "fair prices",
+      "paycheck value"
+    ],
+    "standardTerm": "Economic Conditions and Growth",
+    "plainEnglish": "I want a strong economy where prices are fair, jobs are secure, and my paycheck goes further.",
+    "nuance": {
+      "economic_growth": 0.8,
+      "inflation_control": 0.7,
+      "job_security": 0.7,
+      "economic_stagnation": -0.7
+    },
+    "nuancedMapping": {
+      "concerned_about_inflation": true,
+      "concerned_about_jobs": true,
+      "mentions_cost_of_living": false,
+      "explicitly_mentions_economic_growth": false,
+      "reasoning": "The voter expresses concerns about the overall economy, particularly inflation and job security."
+    }
+  },
+  "healthcare": {
+    "plainLanguage": [
+      "healthcare costs",
+      "medical bills",
+      "health insurance",
+      "mental health",
+      "long-term care"
+    ],
+    "standardTerm": "Healthcare Access and Affordability",
+    "plainEnglish": "I want affordable healthcare that covers everything from doctor visits to mental health and long-term care.",
+    "nuance": {
+      "affordable_care": 0.9,
+      "comprehensive_coverage": 0.8,
+      "opposition_to_expanded_healthcare": -0.8
+    },
+    "nuancedMapping": {
+      "supports_affordable_healthcare": true,
+      "mentions_insurance_costs": false,
+      "concerned_about_medical_bills": false,
+      "supports_mental_health_coverage": false,
+      "reasoning": "The voter supports affordable and comprehensive healthcare coverage."
+    }
+  },
+  "climate": {
+    "plainLanguage": [
+      "climate change",
+      "global warming",
+      "climate skepticism",
+      "climate denial",
+      "extreme weather",
+      "pollution",
+      "hoax"
+    ],
+    "standardTerm": "Climate Change and Environmental Policy",
+    "plainEnglish": "I want our government to take action on climate change and protect our environment from extreme weather and pollution.",
+    "nuance": {
+      "climate_action": 0.8,
+      "environmental_protection": 0.9,
+      "climate_skepticism": -0.8,
+      "climate_hoax": -0.9
+    },
+    "nuancedMapping": {
+      "acknowledges_climate_change": true,
+      "supports_climate_action": true,
+      "explicitly_mentions_global_warming": false,
+      "mentions_extreme_weather": false,
+      "climate_skeptic": false,
+      "reasoning": "The voter acknowledges climate change and supports government action to address it."
+    }
+  },
+  "immigration": {
+    "plainLanguage": [
+      "border security",
+      "immigration reform",
+      "border crisis",
+      "illegal immigration",
+      "legal immigration"
+    ],
+    "standardTerm": "Immigration and Border Security",
+    "plainEnglish": "I want fair immigration policies that secure our borders while giving hardworking immigrants a chance.",
+    "nuance": {
+      "border_security": 0.7,
+      "fair_immigration": 0.6,
+      "anti_immigration": -0.8
+    },
+    "nuancedMapping": {
+      "supports_border_security": true,
+      "supports_immigration_reform": true,
+      "mentions_illegal_immigration": false,
+      "supports_pathway_to_citizenship": false,
+      "reasoning": "The voter supports fair immigration policies with border security."
+    }
+  },
+  "politicalDivision": {
+    "plainLanguage": [
+      "political division",
+      "fake news",
+      "misinformation",
+      "partisan politics",
+      "political polarization"
+    ],
+    "standardTerm": "Political Polarization and Democratic Governance",
+    "plainEnglish": "I want to fix our broken politics, stop fake news, and keep our government honest and fair.",
+    "nuance": {
+      "anti_misinformation": 0.8,
+      "anti_partisanship": 0.7,
+      "political_cynicism": -0.7
+    }
+  },
+  "housing": {
+    "plainLanguage": [
+      "affordable housing",
+      "homelessness",
+      "rent costs",
+      "housing crisis",
+      "property values"
+    ],
+    "standardTerm": "Housing Affordability and Homelessness Prevention",
+    "plainEnglish": "I want safe, affordable housing for everyone and solutions to prevent homelessness.",
+    "nuance": {
+      "affordable_housing": 0.9,
+      "homelessness_prevention": 0.8,
+      "opposition_to_housing_investment": -0.7
+    }
+  },
+  "education": {
+    "plainLanguage": [
+      "school quality",
+      "education costs",
+      "student debt",
+      "college affordability",
+      "public schools",
+      "headstart",
+      "after school programs",
+      "funding for headstart",
+      "school programs"
+    ],
+    "standardTerm": "Education and Student Opportunity",
+    "plainEnglish": "I want quality and affordable education for every student so we can build a better future.",
+    "nuance": {
+      "education_access": 0.8,
+      "affordability": 0.8,
+      "quality_education": 0.9,
+      "education_underfunding": -0.7
+    }
+  },
+  "publicSafety": {
+    "plainLanguage": [
+      "crime",
+      "police reform",
+      "criminal justice",
+      "law enforcement",
+      "public safety",
+      "homelessness and fentanyl",
+      "fentanyl problem",
+      "jan 6th rioters",
+      "violent criminals",
+      "rioters"
+    ],
+    "standardTerm": "Public Safety and Criminal Justice",
+    "plainEnglish": "I want safer communities and a fair justice system that truly protects us all.",
+    "nuance": {
+      "community_safety": 0.8,
+      "justice_fairness": 0.7,
+      "over_criminalization": -0.6
+    }
+  },
+  "inequality": {
+    "plainLanguage": [
+      "wealth gap",
+      "income inequality",
+      "economic fairness",
+      "wealth distribution",
+      "economic opportunity"
+    ],
+    "standardTerm": "Income Inequality and Wealth Distribution",
+    "plainEnglish": "I want a fair system where everyone has a chance to succeed—not just the wealthy.",
+    "nuance": {
+      "income_inequality": 0.9,
+      "wealth_distribution": 0.8,
+      "economic_fairness": 0.8,
+      "status_quo_support": -0.8
+    }
+  },
+  "technology": {
+    "plainLanguage": [
+      "AI",
+      "AI regulation",
+      "artificial intelligence",
+      "machine learning",
+      "automation",
+      "data privacy",
+      "cybersecurity",
+      "robots",
+      "AI could lead to scary",
+      "sci-fi like stuff",
+      "too hard for me to understand"
+    ],
+    "standardTerm": "Technology Policy, AI regulation, Data Privacy, and Cybersecurity",
+    "plainEnglish": "I want strong protections for my personal data and safe, reliable technology that works for everyone.",
+    "nuance": {
+      "data_privacy": 0.8,
+      "cybersecurity": 0.8,
+      "tech_innovation": 0.7,
+      "tech_skepticism": -0.6
+    }
+  },
+  "foreignPolicy": {
+    "plainLanguage": [
+      "national security",
+      "foreign relations",
+      "military strength",
+      "international affairs",
+      "global leadership"
+    ],
+    "standardTerm": "Foreign Policy and National Security",
+    "plainEnglish": "I want our country to be secure at home and respected around the world.",
+    "nuance": {
+      "national_security": 0.8,
+      "global_leadership": 0.7,
+      "diplomacy": 0.7,
+      "isolationism": -0.8
+    }
+  },
+  "laborRights": {
+    "plainLanguage": [
+      "jobs",
+      "employment",
+      "work opportunities",
+      "labor rights",
+      "worker rights",
+      "working conditions",
+      "fair wages"
+    ],
+    "standardTerm": "Labor Rights and Workers' Protections",
+    "plainEnglish": "I want better working conditions and fair treatment for all workers.",
+    "nuance": {
+      "worker_protections": 0.9,
+      "fair_wages": 0.8,
+      "employment_conditions": 0.7,
+      "opposition_to_strong_labor_rights": -0.8
+    }
+  },
+  "genderEquality": {
+    "plainLanguage": [
+      "women's rights",
+      "gender equality",
+      "equal pay",
+      "workplace discrimination",
+      "gender discrimination"
+    ],
+    "standardTerm": "Women's Rights and Gender Equality",
+    "plainEnglish": "I want equal rights and opportunities for women so that everyone can thrive.",
+    "nuance": {
+      "women_empowerment": 0.9,
+      "equal_opportunity": 0.8,
+      "workplace_equality": 0.8,
+      "gender_bias": -0.8
+    }
+  },
+  "civilLiberties": {
+    "plainLanguage": [
+      "civil rights",
+      "individual rights",
+      "constitutional rights",
+      "personal freedom",
+      "civil liberties",
+      "support everyone's right to live",
+      "bill of rights",
+      "rights and protections",
+      "pronouns"
+    ],
+    "standardTerm": "Civil Liberties and Individual Rights",
+    "plainEnglish": "I want to protect our basic freedoms and individual rights so everyone is treated fairly and freely.",
+    "nuance": {
+      "individual_freedoms": 0.9,
+      "constitutional_rights": 0.8,
+      "security_over_liberty": -0.7
+    },
+    "nuancedMapping": {
+      "supports_civil_rights": true,
+      "supports_constitutional_rights": true,
+      "mentions_individual_freedoms": false,
+      "concerned_about_government_overreach": false,
+      "reasoning": "The voter supports protection of basic civil liberties and individual rights."
+    }
+  },
+  "reproductiveRights": {
+    "plainLanguage": [
+      "abortion rights",
+      "pro-choice",
+      "reproductive healthcare",
+      "abortion access",
+      "family planning"
+    ],
+    "standardTerm": "Abortion and Reproductive Rights",
+    "plainEnglish": "I want to ensure that everyone has access to safe, legal abortion and comprehensive reproductive healthcare.",
+    "nuance": {
+      "pro_choice": 0.9,
+      "reproductive_health": 0.8,
+      "anti_reproductive_rights": -0.8
+    }
+  },
+  "proLife": {
+    "plainLanguage": [
+      "pro-life",
+      "abortion restrictions",
+      "unborn rights",
+      "traditional values",
+      "sanctity of life"
+    ],
+    "standardTerm": "Limited Abortion and Pro-Life Policies",
+    "plainEnglish": "I want to protect the rights of the unborn and restrict abortion to preserve traditional values.",
+    "nuance": {
+      "pro_life": 0.9,
+      "traditional_values": 0.8,
+      "anti_pro_life": -0.8
+    }
+  },
+  "churchAndState": {
+    "plainLanguage": [
+      "religious freedom",
+      "separation of church and state",
+      "secular government",
+      "religious influence",
+      "public religion"
+    ],
+    "standardTerm": "Separation of Church and State",
+    "plainEnglish": "I want our schools and government to be free from religious influence, ensuring fairness for everyone.",
+    "nuance": {
+      "secular_government": 0.8,
+      "religious_influence_limitation": 0.7,
+      "religious_overreach": -0.7
+    }
+  },
+  "lgbtqRights": {
+    "plainLanguage": [
+      "LGBTQ rights",
+      "transgender rights",
+      "gender identity",
+      "sexual orientation",
+      "equality"
+    ],
+    "standardTerm": "LGBTQ+ Rights and Inclusion",
+    "plainEnglish": "I want equal rights for LGBTQ+ people—including fair treatment for trans individuals in all areas, like sports.",
+    "nuance": {
+      "lgbtq_inclusion": 0.9,
+      "trans_rights": 0.8,
+      "anti_lgbtq": -0.8
+    }
+  },
+  "traditionalValues": {
+    "plainLanguage": [
+      "traditional values",
+      "anti-woke",
+      "political correctness",
+      "conservative values",
+      "cultural values"
+    ],
+    "standardTerm": "Traditional Values and Cultural Standards",
+    "plainEnglish": "I want a society that respects traditional values and free expression.",
+    "nuance": {
+      "cultural_conservatism": 0.8,
+      "anti_woke": 0.7,
+      "traditional_norms": 0.8,
+      "progressive_values": -0.7
+    }
+  },
+  "moralValues": {
+    "plainLanguage": [
+      "moral standards",
+      "ethics",
+      "values",
+      "principles",
+      "moral guidance"
+    ],
+    "standardTerm": "Moral Values and Ethical Standards",
+    "plainEnglish": "I want our society to stick to clear ethical principles that help guide our decisions about right and wrong.",
+    "nuance": {
+      "ethical_standards": 0.9,
+      "moral_guidance": 0.8,
+      "moral_relativism": -0.7
+    }
+  },
+  "personalLiberty": {
+    "plainLanguage": [
+      "individual freedom",
+      "personal autonomy",
+      "self-determination",
+      "liberty",
+      "freedom from government interference in personal choices"
+    ],
+    "standardTerm": "Personal Autonomy and Freedom",
+    "plainEnglish": "I value my ability to make personal decisions about my life without undue government or societal interference. This is strictly about personal freedoms—not about economic issues or taxes.",
+    "nuance": {
+      "privacy_and_autonomy": 0.9,
+      "government_overreach": 0.8,
+      "economic_issues": -1.0
+    },
+    "exclusionWords": [
+      "tax",
+      "income",
+      "money"
+    ]
+  },
+  "patriotism": {
+    "plainLanguage": [
+      "national pride",
+      "patriotism",
+      "american values",
+      "national identity",
+      "american tradition"
+    ],
+    "standardTerm": "Patriotism and National Pride",
+    "plainEnglish": "I want our country to remain strong and proud, honoring our traditions and working for the common good.",
+    "nuance": {
+      "national_pride": 0.9,
+      "patriotic_spirit": 0.8,
+      "anti_patriotism": -0.7
+    }
+  },
+  "opposeRaceGenderHiring": {
+    "plainLanguage": [
+      "disgraceful to use race in hiring",
+      "disgraceful to use gender in hiring",
+      "hiring based on race",
+      "hiring based on gender",
+      "merit based hiring only",
+      "no quotas in hiring",
+      "disgraceful that race or gender are used",
+      "race decide whether to hire",
+      "gender decide whether to hire",
+      "disgraceful that race",
+      "race are used to decide",
+      "gender are used to decide"
+    ],
+    "standardTerm": "Opposition to Race and Gender-Based Hiring Policies",
+    "plainEnglish": "I believe that hiring should be based solely on merit, and it's disgraceful to use race or gender as deciding factors.",
+    "nuance": {
+      "oppose_affirmative_action_race": -0.8,
+      "oppose_affirmative_action_gender": -0.8,
+      "merit_based_hiring_support": 0.8
+    },
+    "nuancedMapping": {
+      "anti_discrimination": true,
+      "supports_affirmative_action": false,
+      "explicitly_against_affirmative_action": true,
+      "supports_merit_based_hiring": true,
+      "reasoning": "The voter explicitly opposes racial and gender discrimination in hiring, favoring merit-based decisions over quotas or affirmative action policies."
+    }
+  },
+  "governmentWaste": {
+    "plainLanguage": [
+      "waste in government",
+      "departments need to be made more effective",
+      "efficient and accountable",
+      "government efficiency",
+      "government waste",
+      "government accountability",
+      "wasteful spending",
+      "bureaucracy",
+      "inefficient government"
+    ],
+    "standardTerm": "Government Efficiency and Accountability",
+    "plainEnglish": "I want to reduce waste in government and make departments more effective, efficient, and accountable.",
+    "nuance": {}
+  },
+  "publicTransportation": {
+    "plainLanguage": [
+      "local transportation",
+      "affordable transportation",
+      "public transit",
+      "needs more transportation options",
+      "transportation needs"
+    ],
+    "standardTerm": "Public Transportation and Infrastructure",
+    "plainEnglish": "I want more affordable local transportation options to help people get around.",
+    "nuance": {}
+  },
+  "issues": [
+    {
+      "political_priority": "Affirmative Action, DEI Hiring, and Identity Politics",
+      "plain_english": "I support programs that help people based on income opportunities, but I have concerns about race-based measures and the excesses of identity politics.",
+      "nuance": {
+        "affirmative_action_income": 0.7,
+        "affirmative_action_race": -0.6,
+        "DEI_hiring": -0.4,
+        "identity_politics": -0.2,
+        "overall_affirmative_action_opposition": -0.8
+      }
+    }
+  ]
+}
