@@ -34,6 +34,7 @@ VoterPrime is a nonpartisan digital primer that helps eligible US voters make co
 ### 5. Outputs (Based on Mode)
 
 #### Current Mode with Upcoming Election
+- Priority mapping results with standardized policy terms and any conflicts/ambiguities
 - Candidate recommendations (FEC/Google Civic data)
 - Ballot measure explanations
 - Draft emails to officials
