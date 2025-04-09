@@ -318,3 +318,90 @@ The following PDFs serve as canonical visual formatting examples for the applica
 - **Notifications:** Real-time alerts and push notifications about election updates, new recommendations, and changes to candidate or ballot measure information.
 - **Share Functionality:** Enables users to share their priorities mapping, recommendations, and civic education content via social media or email to boost civic engagement.
 - **Comprehensive List of Elected Officials & Contacts:** Offers a complete directory of elected officials from local to national levels along with contact details for extended outreach.
+
+---
+
+# VoterPrime Prototype Product Requirements (updated 4/8/25)
+
+## Overview
+
+VoterPrime is a nonpartisan digital primer that helps eligible US voters make confident voting decisions and become engaged participants in democracy. The application maps user priorities to policy terms and provides actionable civic engagement recommendations.
+
+## Core Features
+
+### 1. Data Integrity & Rules
+- No AI-generated election data
+- All election data sourced from FEC and Google Civic APIs
+- NLP/ChatGPT used only for natural language processing and input structuring
+- Priority mapping must use `src/config/issueTerminology.json`
+- Email drafts must follow templates in `supabase/functions/analyze-priorities/index.ts`
+
+### 2. Modes
+- **Current Mode**: Uses real-time data for current date
+- **Election SIM Mode**: Uses most recent past election data to demonstrate election-time functionality
+
+### 3. User Input Flow
+1. Mode Selection (Current/Election SIM)
+2. Zip Code Entry (5 digits)
+3. Priority Input (1-6 concerns, 250 chars each)
+4. Priority Mapping Review
+5. Get Recommendations
+
+### 4. Political Priorities Mapping Engine (PPME)
+- Maps free-text priorities to standardized policy terms
+- Uses `src/config/issueTerminology.json` as source of truth
+- Detects conflicts and ambiguities
+- Supports expert curation and continuous learning
+- Version controlled terminology updates
+
+### 5. Outputs (Based on Mode)
+
+#### Current Mode with Upcoming Election
+- Candidate recommendations (FEC/Google Civic data)
+- Ballot measure explanations
+- Draft emails to officials
+- Relevant interest groups (HUD)
+- Related petitions (Change.org)
+- Civic education resources
+
+#### Current Mode (No Election)
+- Priority mapping
+- Advocacy emails
+- Interest groups
+- Petitions
+- Civic education
+
+#### Election SIM Mode
+- Demonstrates election-time features using past election data
+- Includes all features for testing/demo purposes
+
+### 6. Email Generation
+- Categorizes officials (Aligned/Opposing/Key Decision Makers)
+- Prioritizes by influence on user's top concerns
+- Customizes message tone based on alignment
+- Direct email client integration
+
+### 7. Critical Dependencies
+- Google Civic API alternative needed by April 30, 2025
+- Approved educational content sources:
+  - iCivics
+  - National Constitution Center
+  - Civic Genius
+  - Ballotpedia
+  - Annenberg Classroom
+  - Center for Civic Education
+  - Khan Academy (Civics & Government)
+
+## Success Metrics
+
+### Prototype Performance
+- 100% data accuracy from verified sources
+- Accurate PPME translations
+- Zero incorrect information
+- 3-second response time
+- Seamless email integration
+- 100% external link reliability
+
+## Timeline
+- Working Prototype: April 15, 2025
+- Google Civic API Migration: April 30, 2025
