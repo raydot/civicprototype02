@@ -405,3 +405,252 @@ VoterPrime is a nonpartisan digital primer that helps eligible US voters make co
 ## Timeline
 - Working Prototype: April 15, 2025
 - Google Civic API Migration: April 30, 2025
+
+## **SUMMARY**
+
+### 1. **Executive Summary** 
+- 86% of young eligible voters (ages 18-29) in the US are not participating in elections or engaging in civic activity mainly because of apathy, disillusionment, and mistrust of government
+- VoterPrime is a nonpartisan digital primer that makes it easy for eligible US voters to make confident voting decisions and to quickly become engaged participants in democracy whether or not there is an upcoming election.
+    - By entering their zip code and articulating their priorities in their own words, users receive **customized, factual recommendations** on candidates and ballot measures, copy-and-send emails to relevant elected officials, and learn about interest groups and petitions that align with their core values and concerns.
+- Unlike political action tools which require users to analyzing complex partisan political information or engage in heated discussions, this solution puts the user's top priorities at the center, and delivers civic engagement plan based on what they care about most.
+- The application delivers value by returning actionable recommendations regardless of whether or not there is an upcoming election
+- Hypotheses:
+    - Civic engagement based on core values is intrinsically motivating
+    - Clear actionable steps reinforce a sense agency and can build long-term habits
+    - Everyone wants help engaging with ballot measures
+    - If a user engages with this application they are more likely to register, vote, and take other civic actions
+    - Citizens who engage with democracy based on their core values—rather than partisan outrage—will push politicians toward problem-solving policies.
+    - This solution will appeal to Digital Natives who prefer tech-driven, mobile-first tools over traditional political content.
+
+### 2. **Business Context**
+- Market opportunity: This is a philanthropic endeavor which will seek funding.
+- User pain points:
+    - As a young eligible voter I want…
+        - to be an engaged citizen but I don't know where to start
+        - to learn how my concerns map to common policy terms and political stances
+        - help making voting decisions based on my concerns without having to get a degree in political science, without having to argue with my friends and family, and without reading 10 pages of confusing ballot measure rhetoric
+        - to have an impact on the decisions made by elected officials
+        - to find easy ways to support groups and petitions that are relevant to my concerns
+    - As a busy person who doesn't enjoy or have time to engage with politics, I want a trustworthy tool to help me engage with government and voice my concerns.
+    - As a product designer I want…
+        - to give voters of all ages a sense of agency
+        - to make political engagement personal, easy, convenient, and delightful
+        - to simplify the voter decision making process
+        - to increase civic engagement because it is critical for a healthy democracy
+- Strategic alignment with company goals
+    - Our mission is to promote personalized positive civic engagement
+
+### 3. **User Requirements**
+- **Primary user personas:**
+    - Sporty Sam (19) is a sophomore in college and an athlete. He knows what his family and friends think about politics because they are always arguing, but he secretly feels embarrassed about how little he knows about how the government works, and thinks his vote probably doesn't matter much anyway.
+    - Disillusioned Danielle (26) is a cosmetologist and only gets political information from social media and customers. She is convinced that everything is hopeless for her generation, for the environment, and that oligarchs have already taken over. She shares pro-women political memes and votes, but only for POTUS in the general elections
+    - "Single mom Sarah" (30) is too busy taking care of her young child, working, and taking care of their home to find time to evaluate election opportunities or explore civic engagement actions.
+- **Key user journeys/use cases**
+    - **First-time engagement journey**
+        - User downloads app/visits website and enters zip code
+        - Enters their top 6 concerns in their own words
+        - Receives personalized dashboard with translated political terminology matching their priorities
+        - Gets immediate actionable steps based on their concerns (register to vote, upcoming elections, draft emails to elected officials, relevant petitions)
+    - **Election preparation use case**
+        - User receives notification about upcoming election relevant to their location
+        - Views simplified, neutral explanations of ballot measures filtered by their priority concerns
+        - Accesses candidate comparison tool showing positions specifically on user's priority issues
+        - Creates and saves a personalized voting plan they can reference at the polls
+    - **Ongoing civic engagement journey**
+        - User discovers and connects with local/national groups aligned with their priorities
+        - Tracks voting record of their representatives on their priority issues
+        - Gets alerts about petitions and non-electoral civic actions related to their concerns
+    - **Knowledge-building pathway**
+        - User accesses educational content explaining how their concerns translate to policy areas
+        - Builds confidence through "civic literacy" modules tailored to their interests
+        - Receives simplified updates on legislation related to their priorities
+        - Gradually expands their engagement across more civic areas as comfort grows
+
+### 4. **Solution Overview**
+- High-level functionality description: By entering their zip code and articulating their priorities in their own words, users receive **customized, factual recommendations** on candidates and ballot measures, copy-and-send emails to relevant elected officials, and learn about interest groups, petitions, and civic educational content related to their core values and concerns.
+    - **Party-Agnostic Approach:** Maps authentic user input (via free-text) to standardized policy categories using a **Political Priorities Mapping Engine** **(PPME)** powered by **natural language processing (NLP)** and **sentiment analysis**.
+    - **User-Friendly Detail for making election decisions:** Both quick summaries of why candidates or ballots map to user concerns; and compare and contrast tables with playful icons; call outs for conflicts (where the candidate maps to the user's concerns in one way but not in another)
+    - **Actionable Outputs:** Save or share your voter cheat sheet. Direct links, editable draft emails, and clear recommendations.
+    - **Dual Modes:** Supports **CURRENT** (using real live data pulled from trusted databases for the current date) and an **ELECTION SIM mode** to demonstrate how it will work in an election cycle (This for testing, attracting funding and partners, and to show users what they can expect)
+    - **Recommendation Language Standard** Must be **plain spoken** (assume a high school education level), **factual**, **caring, and optimistic**.
+
+### 5. **Success Metrics:** 
+- **Prototype Performance Metrics:**
+    - **Data Accuracy:** Application returns correct, factual data from verified sources and APIs based on user inputs 100% of the time
+    - **Political Priorities Mapping:** PPME accurately translates user concerns into political terminology and improves through user feedback/corrections
+    - **Information Integrity:** Zero instances of incorrect or unverified information presented to users
+    - **Response Time:** Application returns results within 3 seconds; displays progress animations for any operations exceeding 1 second
+    - **Email Functionality:** Seamless email client integration with proper handling on both desktop (new window) and mobile (new tab) environments
+    - **Link Reliability:** 100% functionality of all clickable links to external resources (candidates, ballot measures, interest groups, petitions, and educational content)
+
+### 6. **Timeline & Dependencies**
+- Major milestones:
+    - Working Prototype by 4/15/25
+    - Demonstrates completely working Prototype Functional Requirements
+    - Is built with potential to accommodate Future Functional Requirements
+- Critical dependencies
+    - Google Civic's representative data will become unavailable April 30, 2025 so will need to find an alternative database and API call to return that data
+
+## **Prototype Functional Requirements**
+
+### **1. RULES & DATA INTEGRITY**
+
+- **Data Authenticity:**
+    - No AI-generated election data.
+    - All election data must be sourced from FEC and Google Civic APIs.
+- **NLP & Mapping Constraints:**
+    - ChatGPT is **only** used for **natural language processing (NLP)** and structuring user input.
+    - **Mapping of priorities must use** `src/config/issueTerminology.json`.
+    - **Email drafts must follow templates in** `supabase/functions/analyze-priorities/index.ts`.
+
+### **2. INPUTS & USER INTERACTIONS**
+
+- **Mode Selection:**
+    - **Options:** "Current" or "Election SIM Mode"
+- *Current Date:* uses the current date to return real election and civic engagement options per the user's zip code
+- Simulates results for the user's zip code for an upcoming general election based on the most recent prior general election data (just for demo purposes)
+- **Zip Code:**
+    - 5-digit numeric field (exactly five digits).
+- **Top 6 Priorities:**
+    - Free-text entries (up to 250 characters each).
+    - Users can enter up to 6 priority concerns.
+    - The minimal number is 1.
+    - Users can reorder their concerns to express prioritization via drag-and-drop.
+- "SUBMIT" button initiates policy mapping
+    - This is the highest value feature of this application. Our **Political Priorities Mapping Engine** converts free-text input into **standardized policy categories** using **`src/config/issueTerminology.json`**.
+    - This returns for the user a table mapping their inputs to policy terms
+        - **Conflict Detection:** NLP flags contradictory or ambiguous entries and prompts users for clarification.
+    - Dynamic updates: The user can edit their original inputs (zip code or priorities) trigger **immediate refreshes** in recommendations.
+    - When the user is satisfied with the mapping they can click Get Recommendations
+- "Get Recommendations"
+    - Yes - show me recommendations - initiates processing and displays policy mapping and recommendation results to the user
+
+### **3. TESTING FEATURES**
+
+- **Persona autofill functionality**
+    - As a developer I want buttons to preload the user inputs with two defined personas and a random persona for ease and speed of testing the application. These will be removed later.
+    - The random persona will help feed new terms for mapping into the PPME so that it can build and improve
+- **API Connection Verification**
+    - **API Connection Buttons:**
+        - **Check Google Civic API Connection**
+        - **Check FEC API Connection**
+        - **Visual Indicators:** Green checkmark (success) or red alert (failure).
+        - **Toast Notifications:** Display connection status details.
+- **Terminology Debug Tool:**
+    - Tests the **terminology mapping system** (via `src/config/issueTerminology.json`).
+    - Displays **matched categories, confidence scores, and recognized standardized terms**.
+
+### **4. POLICY MAPPING SYSTEM**
+
+#### 4.1. External Policy Terminology File
+
+- Policy mappings must be maintained in `src/config/issueTerminology.json`
+- This file serves as the single source of truth for policy term mappings
+- File structure must support:
+    - Standard policy terms
+    - Plain language alternatives
+    - Contextual relationships
+    - Nuanced distinctions (e.g., "fair hiring" vs "affirmative action")
+    - Confidence weights
+    - Potential conflicts
+
+#### 4.2. Expert Curation
+
+- Policy experts must be able to review and update terminology mappings
+- Updates should focus on:
+    - Adding new policy terms
+    - Refining existing mappings
+    - Improving nuanced distinctions
+    - Adding contextual relationships
+    - Resolving ambiguities
+
+#### 4.3. Learning System
+
+- The system must log and learn from:
+    - User inputs and their mapped terms
+    - User clarifications and corrections
+    - Detected ambiguities and conflicts
+    - Success rates of mappings
+- Learning outcomes should:
+    - Suggest new policy terms
+    - Identify gaps in terminology
+    - Highlight common user phrasings
+    - Track confidence scores
+    - Flag potential improvements
+
+#### 4.4. Continuous Improvement
+
+- Regular review cycles for terminology updates
+- Data-driven recommendations for mapping improvements
+- Version control for terminology file
+- Documentation of mapping changes
+- Validation system for updates
+- All outputs are ordered by alignment with user's mapped concerns
+
+### 5. Mode-Specific Outputs
+
+#### 5.1 Current Mode (When Election is Upcoming)
+
+- **Candidate Recommendations:**
+    - These must be pulled from FEC or Google Civic databases via APIs, not generated from ChatGPT
+    - **POTUS:** Best-matching candidates with alignment icons, platform highlights, rationale tied to user priorities, and official website links
+    - **State & Local:** At least 3 candidates per office in compare/contrast tables with position summaries and match rationales
+- **Ballot Measures:** Brief descriptions, supporter/opposition info, relevance to user concerns, and Ballotpedia links
+- **Advocacy Tools:** Email drafts to relevant officials using logic in `supabase/functions/analyze-priorities/index.ts`
+- **Interest groups** (HUD website)
+- **Petitions (Change.org)**
+- **Civic education content**
+    - All civic education content should be curated from **reputable, nonpartisan educational institutions**. Acceptable sources **include and are limited to**:
+        - [iCivics](https://www.icivics.org/)
+        - [National Constitution Center](https://constitutioncenter.org/)
+        - [Civic Genius](https://www.civicgenius.org/)
+        - [Ballotpedia](https://www.ballotpedia.org/)
+        - [Annenberg Classroom](https://www.annenbergclassroom.org/)
+        - [The Center for Civic Education](https://www.civiced.org/)
+        - [Khan Academy – Civics & Government](https://www.khanacademy.org/)
+
+#### Current Mode (No Upcoming Election)
+
+- Provides priorities mapping, advocacy emails, interest groups, petitions, and civic education resources
+- Skips candidate and ballot measure sections
+
+#### Election Simulation Mode
+
+*User Story: As a developer, potential funder, potential partner, I want to see how the application will work when there is an upcoming election*
+
+- Displays recommendations based on most recent past election for user's location
+- Includes all features: candidate matches, ballot measures, email drafts, interest groups, petitions, and education resources
+
+### 4.4 Email Generation Logic
+
+*User Stories:*
+- *As a user I don't want to be overwhelmed with all of the possible elected officials I might contact via email. I want the application to identify the most important ones who may have real sway in terms of my top 3 priority issues.*
+- *As a user, I want the application to provide drafted emails, actual email addresses, and allow me to launch my email client, prefilling the email address, subject line, and draft content*
+
+- **Official Categorization:** Groups officials as Aligned, Opposing, or Key Decision Makers
+- Prioritize Key Decision Makers, then Opposing, then Aligned
+- **Messaging Strategy:**
+    - Supportive: Thank-you and reinforcement
+    - Opposing: Educational and persuasive
+    - Mixed: Acknowledgment with persuasion
+
+### 4.5 Summary Output Dashboard
+
+All user results are displayed in a single, scrollable dashboard, including:
+
+- **Header Info:**
+    - Mode: (Current / Election SIM)
+    - Zip Code + Region
+- **Priorities Mapping Section:**
+    - NLP analysis of user-stated concerns → standardized policy issues
+    - Clarify / Get Recommendations buttons
+    - Each concern summarized with:
+        - Issue mapping
+        - Any ambiguity or conflicting signals flagged for review
+- **Recommendations Section:**
+    - All available outputs based on mode and ballot availability:
+        - Candidate Tables
+        - Ballot Measures
+        - Email Drafts + Contacts
+        - Interest Groups + Petitions
+        - Civic Education
