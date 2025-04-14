@@ -13,6 +13,7 @@ This document outlines the specific acceptance criteria for the VoterPrime appli
 | 1.1.3 | NLP/ChatGPT must be used only for natural language processing and input structuring | ⬜ |
 | 1.1.4 | Priority mapping must use the terminology defined in `src/config/issueTerminology.json` | ⬜ |
 | 1.1.5 | Email drafts must follow templates in `supabase/functions/analyze-priorities/index.ts` | ⬜ |
+| 1.1.6 | When user inputs do not map with a confidence above 80% to the mapping tool terms, the user must be asked to clarify their meaning in the results table | ⬜ |
 
 ### 1.2 Application Modes
 
@@ -52,7 +53,15 @@ This document outlines the specific acceptance criteria for the VoterPrime appli
 |----|---------------------|--------|
 | 2.1.1 | Priority mapping results show standardized policy terms | ⬜ |
 | 2.1.2 | Priority mapping identifies conflicts/ambiguities | ⬜ |
-| 2.1.3 | Candidate recommendations are displayed using FEC/Google Civic data | ⬜ |
+| 2.1.3 | Candidate recommendations are displayed using FEC/Google Civic data with the following requirements: | ⬜ |
+| 2.1.3.1 | Presidential candidates appear first, showing top 3 best matches | ⬜ |
+| 2.1.3.2 | State-level candidates appear next, followed by local candidates | ⬜ |
+| 2.1.3.3 | Each candidate card displays name, party, office, alignment indicator (✅/⚠️/❌) | ⬜ |
+| 2.1.3.4 | Each candidate card shows position summary and platform highlights | ⬜ |
+| 2.1.3.5 | Candidate cards include rationale explaining alignment with user priorities | ⬜ |
+| 2.1.3.6 | Official website link is provided for each candidate | ⬜ |
+| 2.1.3.7 | Mobile-friendly, touch-optimized layout with responsive design | ⬜ |
+| 2.1.3.8 | Candidates are sortable/filterable by alignment score | ⬜ |
 | 2.1.4 | Ballot measure explanations are provided | ⬜ |
 | 2.1.5 | Draft emails to officials are generated | ⬜ |
 | 2.1.6 | Relevant interest groups are displayed | ⬜ |
@@ -116,41 +125,65 @@ This document outlines the specific acceptance criteria for the VoterPrime appli
 
 ## 4. User Experience for Specific Personas
 
-### 4.1 Sal (College Student)
+### 4.1 Sal (19, College Student, Ann Arbor, MI)
 
 | ID | Acceptance Criteria | Status |
 |----|---------------------|--------|
-| 4.1.1 | Application correctly maps Sal's concerns about free expression and censorship | ⬜ |
-| 4.1.2 | Environmental priorities are mapped to appropriate policy terms | ⬜ |
-| 4.1.3 | Concerns about education costs are addressed in recommendations | ⬜ |
-| 4.1.4 | Application detects potential conflicts in Sal's priorities | ⬜ |
+| 4.1.1 | "I don't want to be labeled or canceled just for having questions" maps to "Free expression / civil liberties" | ⬜ |
+| 4.1.2 | "Why can't the government agree on what we need to do to address climate change?" maps to "Climate research + market-based climate policy" | ⬜ |
+| 4.1.3 | "IF trans people want to claim their pronouns...I don't want it forced on me" maps to "Pronoun policy / speech freedom tension" | ⬜ |
+| 4.1.4 | "Censorship freaks me out — like how social media hides stuff..." maps to "Tech regulation, content moderation transparency" | ⬜ |
+| 4.1.5 | "Politics feels corrupt — can it be fixed?" maps to "Government ethics, transparency reform" | ⬜ |
+| 4.1.6 | "College costs too much, how will we afford homes?" maps to "Tuition reform, student debt relief, housing access" | ⬜ |
+| 4.1.7 | Application detects potential conflicts in Sal's priorities related to government regulation vs. freedom | ⬜ |
 
-### 4.2 Danielle (Cosmetologist)
-
-| ID | Acceptance Criteria | Status |
-|----|---------------------|--------|
-| 4.2.1 | Women's rights concerns are properly mapped to policy terms | ⬜ |
-| 4.2.2 | Safety and criminal justice concerns are addressed | ⬜ |
-| 4.2.3 | Economic inequality concerns are reflected in recommendations | ⬜ |
-| 4.2.4 | Mental health priorities are mapped to appropriate resources | ⬜ |
-
-### 4.3 Joe (Economics Student)
+### 4.2 Danielle (23, Cosmetologist, St. Louis, MO)
 
 | ID | Acceptance Criteria | Status |
 |----|---------------------|--------|
-| 4.3.1 | Personal freedom and limited government concerns are properly mapped | ⬜ |
-| 4.3.2 | Gun control stance is reflected in recommendations | ⬜ |
-| 4.3.3 | Concerns about government spending are addressed | ⬜ |
-| 4.3.4 | Application detects potential conflicts in Joe's priorities | ⬜ |
+| 4.2.1 | "I want women to have choices and control over our bodies" maps to "Reproductive rights" | ⬜ |
+| 4.2.2 | "Scared by violent immigrant stories... what's with pardons?" maps to "Public safety, immigration enforcement, criminal justice" | ⬜ |
+| 4.2.3 | "Rich get richer, can't even pay rent" maps to "Income inequality, rent relief, minimum wage" | ⬜ |
+| 4.2.4 | "We need better mental health care..." maps to "Affordable therapy, Medicaid, community care" | ⬜ |
+| 4.2.5 | "Protect LGBTQ+ rights, but I don't like trans women in my locker room" maps to "Anti-discrimination + gender space policy tension" | ⬜ |
+| 4.2.6 | "I voted once, but felt forced... no great choice" maps to "Electoral trust, campaign reform, better candidate access" | ⬜ |
+| 4.2.7 | Application identifies conflict between LGBTQ+ rights support and gender space concerns | ⬜ |
 
-### 4.4 T.J. (Barista and Youth Advocate)
+### 4.3 Joe (20, Economics Student, Pittsburgh, PA)
 
 | ID | Acceptance Criteria | Status |
 |----|---------------------|--------|
-| 4.4.1 | LGBTQ+ rights concerns are properly mapped | ⬜ |
-| 4.4.2 | Police accountability priorities are reflected in recommendations | ⬜ |
-| 4.4.3 | Digital privacy concerns are addressed | ⬜ |
-| 4.4.4 | Environmental and mental health priorities are mapped appropriately | ⬜ |
+| 4.3.1 | "Gov't should stay out of most things" maps to "Limited government, deregulation" | ⬜ |
+| 4.3.2 | "Woke politics divide us — I don't have a voice" maps to "Anti-DEI, race/gender neutrality" | ⬜ |
+| 4.3.3 | "Gov't spending is out of control" maps to "Fiscal conservatism, balanced budget" | ⬜ |
+| 4.3.4 | "Support gun control — school shootings are personal" maps to "Gun background checks, red-flag laws" | ⬜ |
+| 4.3.5 | "Admissions should be based on effort — not identity" maps to "Race-neutral admissions policy" | ⬜ |
+| 4.3.6 | "Men's mental health isn't taken seriously" maps to "Male mental health access and stigma reduction" | ⬜ |
+| 4.3.7 | Application identifies potential conflict between limited government stance and support for gun control | ⬜ |
+
+### 4.4 T.J. (25, Barista and Youth Advocate, Oakland, CA)
+
+| ID | Acceptance Criteria | Status |
+|----|---------------------|--------|
+| 4.4.1 | "Queer and trans folks are under attack" maps to "LGBTQ+ rights, anti-discrimination protections" | ⬜ |
+| 4.4.2 | "Tired of fake allyship — I want real policy" maps to "Policy integrity, equity audits" | ⬜ |
+| 4.4.3 | "We need police accountability, not just promises" maps to "Law enforcement reform" | ⬜ |
+| 4.4.4 | "Scared of how much data is collected on me" maps to "Digital privacy, surveillance reform" | ⬜ |
+| 4.4.5 | "The planet is burning... but elites fly jets" maps to "Climate justice, carbon accountability" | ⬜ |
+| 4.4.6 | "Mental health is a crisis — especially for queer youth" maps to "Inclusive mental health funding" | ⬜ |
+| 4.4.7 | Application provides resources that address intersectionality of T.J.'s concerns | ⬜ |
+
+### 4.5 Gracie (22, Religious Conservative)
+
+| ID | Acceptance Criteria | Status |
+|----|---------------------|--------|
+| 4.5.1 | "Abortion ends a life — we need to support moms instead" maps to "Pro-life policy + maternal support" | ⬜ |
+| 4.5.2 | "I love my church and I want laws that respect that" maps to "Religious liberty protections" | ⬜ |
+| 4.5.3 | "I back the police — but they need to earn our trust" maps to "Community policing + trust reform" | ⬜ |
+| 4.5.4 | "We need more mental health support, especially for families and veterans" maps to "Family mental health + VA access" | ⬜ |
+| 4.5.5 | "I believe in traditional values — family comes first" maps to "Family policy, child care, faith-friendly spaces" | ⬜ |
+| 4.5.6 | "I want to believe elections are fair — but I have doubts" maps to "Election integrity + civic trust initiatives" | ⬜ |
+| 4.5.7 | Application provides balanced resources that respect religious perspectives | ⬜ |
 
 ## 5. Critical Dependencies
 
