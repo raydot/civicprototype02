@@ -205,7 +205,7 @@ VoterPrime is a nonpartisan digital primer that helps eligible US voters make co
 ### **3. TESTING FEATURES**
 
 - **Persona autofill functionality**
-    - As a developer I want buttons to preload the user inputs with our 4 defined personas and a random persona for ease and speed of testing the application. These will be removed later. Please label them with just names:  Sal, Joe, Danielle, TJ & Random
+    - As a developer I want a button to autofill user inputs with random legitimate US zip codes and priorities for testing. The random priorities should reflect concerns of US citizens ages 18-40. 
     - The random persona will help feed new terms for mapping into the PPME so that it can build and improve
 - **API Connection Verification**
     - **API Connection Buttons:**
