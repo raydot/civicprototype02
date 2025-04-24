@@ -13,25 +13,32 @@ VoterPrime is a nonpartisan digital primer that helps eligible US voters make co
 - Priority mapping must use `src/config/issueTerminology.json`
 - Email drafts must follow templates in `supabase/functions/analyze-priorities/index.ts`
 
-### 2. Modes
+### 2. Development Rules
+- All application logic, interface behavior, and visual changes must follow the specifications defined in this PRD
+- If a new UI element or behavior is introduced through direct instruction from the user (outside the current PRD), that change must be captured and added to this document immediately
+- Do NOT introduce additional visual elements, optimizations, interactions, or inferred logic unless explicitly requested by the user
+- Treat this document as the authoritative source of truth for current functionality
+- Do not "enhance," "simplify," or "improve" the experience unless explicitly instructed to do so
+
+### 3. Modes
 - **Current Mode**: Uses real-time data for current date
 - **Election SIM Mode**: Uses most recent past election data to demonstrate election-time functionality
 
-### 3. User Input Flow
+### 4. User Input Flow
 1. Mode Selection (Current/Election SIM)
 2. Zip Code Entry (5 digits)
 3. Priority Input (1-6 concerns, 250 chars each)
 4. Priority Mapping Review
 5. Get Recommendations
 
-### 4. Political Priorities Mapping Engine (PPME)
+### 5. Political Priorities Mapping Engine (PPME)
 - Maps free-text priorities to standardized policy terms
 - Uses `src/config/issueTerminology.json` as source of truth
 - Detects conflicts and ambiguities
 - Supports expert curation and continuous learning
 - Version controlled terminology updates
 
-### 5. Outputs (Based on Mode)
+### 6. Outputs (Based on Mode)
 
 #### Current Mode with Upcoming Election
 - Priority mapping results with standardized policy terms and any conflicts/ambiguities
@@ -53,13 +60,13 @@ VoterPrime is a nonpartisan digital primer that helps eligible US voters make co
 - Demonstrates election-time features using past election data
 - Includes all features for testing/demo purposes
 
-### 6. Email Generation
+### 7. Email Generation
 - Categorizes officials (Aligned/Opposing/Key Decision Makers)
 - Prioritizes by influence on user's top concerns
 - Customizes message tone based on alignment
 - Direct email client integration
 
-### 7. Critical Dependencies
+### 8. Critical Dependencies
 - Google Civic API alternative needed by April 30, 2025
 - Approved educational content sources:
   - iCivics

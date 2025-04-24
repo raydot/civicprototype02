@@ -1,7 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PolicyRecommendation } from '@/utils/policyRecommendations';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRightIcon, MagnifyingGlassIcon, SunIcon, ScissorsIcon } from '@radix-ui/react-icons';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorFallback } from '@/components/ErrorFallback';
+import { useState, useEffect } from 'react';
 
 const typeIcons = {
   compromise: <ScissorsIcon className="h-4 w-4" />,
@@ -15,66 +17,65 @@ const priorityColors = {
   low: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
 };
 
+// Updated interface to match the actual data structure
 interface PolicyRecommendationsProps {
-  recommendations: PolicyRecommendation[];
+  recommendations: {
+    topPolicies?: string[];
+    explanation?: string;
+  };
 }
 
 export function PolicyRecommendations({ recommendations }: PolicyRecommendationsProps) {
-  if (!recommendations || recommendations.length === 0) {
+  // Debug logging
+  useEffect(() => {
+    console.log('PolicyRecommendations rendered with data:', recommendations);
+  }, [recommendations]);
+
+  // Safety check for recommendations data
+  if (!recommendations) {
+    console.error('PolicyRecommendations: recommendations is null or undefined');
+    return null;
+  }
+
+  const { topPolicies = [], explanation = 'Based on your priorities' } = recommendations;
+
+  if (topPolicies.length === 0) {
     return null;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <SunIcon className="h-5 w-5 text-yellow-500" />
-        <h2 className="text-lg font-semibold">Policy Recommendations</h2>
-      </div>
+    <ErrorBoundary
+      FallbackComponent={(props) => (
+        <ErrorFallback {...props} componentName="PolicyRecommendations" />
+      )}
+    >
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <SunIcon className="h-5 w-5 text-yellow-500" />
+          <h2 className="text-lg font-semibold">Policy Recommendations</h2>
+        </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {recommendations.map((recommendation, index) => (
-          <Card key={index} className="relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4">
-              {typeIcons[recommendation.type]}
+        <Card className="relative overflow-hidden">
+          <CardHeader>
+            <CardTitle>Top Policy Priorities</CardTitle>
+            <CardDescription>{explanation}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {topPolicies.map((policy, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <Badge className="mt-0.5" variant="secondary">
+                    {index + 1}
+                  </Badge>
+                  <div>
+                    <p className="font-medium">{policy}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="secondary"
-                  className={priorityColors[recommendation.priority]}
-                >
-                  {recommendation.priority}
-                </Badge>
-                <Badge variant="outline">{recommendation.type}</Badge>
-              </div>
-              <CardTitle className="mt-2">{recommendation.title}</CardTitle>
-              <CardDescription>{recommendation.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recommendation.suggestedActions && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">Suggested Actions:</h4>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    {recommendation.suggestedActions.map((action, actionIndex) => (
-                      <li key={actionIndex}>{action}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="mt-4">
-                <h4 className="text-sm font-medium text-muted-foreground">Related Priorities:</h4>
-                <div className="mt-1 flex flex-wrap gap-2">
-                  {recommendation.relatedPriorities.map((priority, priorityIndex) => (
-                    <Badge key={priorityIndex} variant="outline" className="text-xs">
-                      {priority}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }

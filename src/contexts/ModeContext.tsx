@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-
-export type Mode = 'current' | 'demo';
+import { createContext, useContext, useState } from 'react';
+import { Mode } from '@/types/api';
 
 interface ModeContextType {
   mode: Mode;

@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-04-16T09:40:00-07:00",
+  "pendingTerms": [],
+  "approvedTerms": [
+    {
+      "id": "1",
+      "term": "Lower taxes",
+      "category": "Economy",
+      "synonyms": [
+        "Tax reduction",
+        "Tax cuts",
+        "Reduce tax burden",
+        "Decrease taxation"
+      ],
+      "mappedPolicies": [
+        "Tax reform",
+        "Fiscal policy"
+      ],
+      "dateAdded": "2025-04-16T09:40:00-07:00",
+      "status": "approved"
+    },
+    {
+      "id": "2",
+      "term": "Climate change action",
+      "category": "Environment",
+      "synonyms": [
+        "Global warming solutions",
+        "Environmental protection",
+        "Carbon reduction",
+        "Green initiatives"
+      ],
+      "mappedPolicies": [
+        "Climate policy",
+        "Environmental regulation",
+        "Renewable energy"
+      ],
+      "dateAdded": "2025-04-16T09:40:00-07:00",
+      "status": "approved"
+    }
+  ]
+}

@@ -34,97 +34,9 @@ const LogoText = ({ showText = true }: LogoTextProps) => (
 const Navbar = () => {
   const isMobile = useIsMobile();
 
-  const NavLinks = () => (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link to="/">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
-                  >
-                    <BadgeCheck className="h-6 w-6" />
-                    <div className="mb-2 mt-4 text-lg font-medium">
-                      Voter Information
-                    </div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      Nonpartisan information to help you make informed voting decisions
-                    </p>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-              <ListItem href="https://www.vote.gov" title="Vote.gov">
-                Register to vote and find polling information
-              </ListItem>
-              <ListItem href="https://www.usa.gov/election" title="USA.gov Elections">
-                Official U.S. government information about elections
-              </ListItem>
-              <ListItem href="https://www.ballotready.org" title="BallotReady">
-                Research candidates and issues on your ballot
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link to="/debug">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Debug Tool
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link to="/test/conflicts">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Test Conflicts
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
+  const NavLinks = () => null;
 
-  const MobileMenu = () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link to="/">Home</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/debug">Debug Tool</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <a href="https://www.vote.gov" target="_blank" rel="noopener noreferrer">
-            Vote.gov
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <a href="https://www.ballotready.org" target="_blank" rel="noopener noreferrer">
-            BallotReady
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/test/conflicts">Test Conflicts</Link>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  const MobileMenu = () => null;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">

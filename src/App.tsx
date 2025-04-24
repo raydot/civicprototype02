@@ -9,6 +9,7 @@ import Auth from '@/pages/Auth';
 import NotFound from '@/pages/NotFound';
 import Debug from '@/pages/Debug';
 import ConflictTest from '@/pages/ConflictTest';
+import TestMapping from '@/pages/TestMapping';
 import './App.css';
 
 // Create a client
@@ -31,6 +32,7 @@ function App() {
               <Route path="/auth" element={<Auth />} />
               <Route path="/debug" element={<Debug />} />
               <Route path="/test/conflicts" element={<ConflictTest />} />
+              <Route path="/test/mapping" element={<TestMapping />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

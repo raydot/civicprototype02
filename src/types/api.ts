@@ -1,18 +1,17 @@
-import { Mode } from '@/contexts/ModeContext';
-import { MappedPriority, ConflictResult } from './policy-mappings';
+// Mode type for the application
+export type Mode = "current" | "demo";
 
-export type Stance = 'strongly-support' | 'support' | 'neutral' | 'oppose' | 'strongly-oppose';
-
-export interface Organization {
-  name: string;
-  description: string;
-  stance: Stance;
-  reason: string;
-}
-
-export interface PriorityMatch {
+export interface PriorityMapping {
   userPriority: string;
   mappedTerms: string[];
+}
+
+export interface ConflictResult {
+  priority1: string;
+  priority2: string;
+  reason: string;
+  severity?: 'low' | 'medium' | 'high';
+  categories?: string[];
 }
 
 export interface Candidate {
@@ -24,6 +23,9 @@ export interface Candidate {
   rationale: string;
   officialWebsite: string;
   positionSummary?: string;
+  stances?: Array<{
+    topics: string[];
+  }>;
 }
 
 export interface BallotMeasure {
@@ -50,22 +52,61 @@ export interface InterestGroup {
   name: string;
   description: string;
   website: string;
-  relevance: string;
+  stance?: Stance;
+  reason?: string;
 }
 
 export interface Petition {
   title: string;
   description: string;
   changeOrgUrl: string;
-  relevance: string;
+  relevance?: string;
 }
+
+export type Stance = 'strongly-support' | 'support' | 'neutral' | 'oppose' | 'strongly-oppose';
 
 export interface CivicEducationResource {
   topic: string;
   description: string;
-  source: 'iCivics' | 'National Constitution Center' | 'Civic Genius' | 'Ballotpedia' | 'Annenberg Classroom' | 'Center for Civic Education' | 'Khan Academy Civics';
+  source: string;
   url: string;
-  type: 'article' | 'video' | 'interactive';
+  type: 'article' | 'video' | 'interactive' | 'explainer';
+}
+
+export interface AnalysisResult {
+  recommendations: Recommendations | null;
+  analysis: {
+    mappedPriorities: Array<{
+      original?: string;
+      priority?: string;
+      category?: string;
+      mappedTerms?: string[];
+      policyTerms?: string[];
+      sentiment?: 'positive' | 'negative' | 'neutral';
+      confidence?: number;
+      needsClarification?: boolean;
+      clarificationReason?: string;
+      possibleTopics?: string[];
+    }>;
+    conflicts?: ConflictResult[];
+    priorities?: string[];
+  } | null;
+  zipCode: string;
+  region: string;
+  error: Error | null;
+}
+
+export interface Recommendations {
+  candidates?: Candidate[];
+  ballotMeasures?: BallotMeasure[];
+  emailDrafts?: EmailDraft[];
+  interestGroups?: InterestGroup[];
+  petitions?: Petition[];
+  educationResources?: CivicEducationResource[];
+  policyRecommendations?: {
+    topPolicies?: string[];
+    explanation?: string;
+  };
 }
 
 export interface RecommendationsData {
@@ -73,22 +114,28 @@ export interface RecommendationsData {
   zipCode: string;
   region: string;
   analysis: {
-    summary: string;
     priorities: string[];
     conflicts: ConflictResult[];
+    mappedPriorities: Array<{
+      original: string;
+      priority?: string;
+      category?: string;
+      mappedTerms?: string[];
+      policyTerms?: string[];
+      sentiment?: 'positive' | 'negative' | 'neutral';
+      confidence?: number;
+      needsClarification?: boolean;
+      clarificationReason?: string;
+      possibleTopics?: string[];
+    }>;
   };
-  mappedPriorities: MappedPriority[];
-  recommendations: {
-    potus?: Candidate[];
-    localOffices?: {
-      [office: string]: Candidate[];
-    };
-    ballotMeasures?: BallotMeasure[];
-    emailDrafts: EmailDraft[];
-    interestGroups: InterestGroup[];
-    petitions: Petition[];
-    civicEducation: CivicEducationResource[];
-  };
+  recommendations: Recommendations;
+  error?: Error | null;
+}
+
+export interface ApiStatus {
+  googleCivic: 'loading' | 'success' | 'error';
+  fec: 'loading' | 'success' | 'error';
 }
 
 export interface ApiResponse<T> {

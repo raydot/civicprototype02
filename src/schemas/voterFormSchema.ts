@@ -1,26 +1,21 @@
 import { z } from 'zod';
-import { Mode } from '@/contexts/ModeContext';
+import { Mode } from '@/types/api';
 
 // Form validation schema
 export const VoterFormSchema = z.object({
-  mode: z.custom<Mode>(),
+  mode: z.enum(['current', 'demo'] as const).optional(),
   zipCode: z
     .string()
-    .length(5, 'ZIP code must be exactly 5 digits')
-    .regex(/^\d+$/, 'ZIP code must contain only numbers'),
+    .min(5, 'ZIP code must be at least 5 characters')
+    .max(10, 'ZIP code must not exceed 10 characters')
+    .optional(),
   priorities: z
     .array(
       z
         .string()
-        .max(250, 'Priority must be less than 250 characters')
     )
-    .min(1, 'Must have at least 1 priority')
-    .max(6, 'Must have no more than 6 priorities')
+    .min(1, 'At least one priority is required')
+    .optional(),
 });
 
 export type VoterFormValues = z.infer<typeof VoterFormSchema>;
-
-// This schema is used to validate user input before sending to the API
-// It ensures that:
-// - The ZIP code is exactly 5 digits and contains only numbers
-// - Between 1 and 6 priorities are provided, none of which are empty

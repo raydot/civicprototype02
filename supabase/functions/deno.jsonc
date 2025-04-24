@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env index.ts"
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.168.0/",
+    "xhr": "https://deno.land/x/xhr@0.1.0/mod.ts"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window", "deno.ns", "dom"],
+    "strict": true,
+    "types": ["deno"]
+  }
+}

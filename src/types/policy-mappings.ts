@@ -19,9 +19,21 @@ export interface PriorityAnalysis {
 }
 
 export interface MappedPriority {
-  original: string;
-  category: string;
-  mappedTerm: string;
+  priority: string;
+  policyTerms: string[];
   sentiment: 'positive' | 'negative' | 'neutral';
   confidence: number;
+  needsClarification: boolean;
+  clarificationReason?: string;
+  
+  // New fields for adding concerns
+  needsAddition?: boolean;
+  additionPrompt?: string;
+  suggestedCategory?: string;
+  
+  // Legacy fields for backward compatibility
+  original?: string;
+  category?: string;
+  mappedTerms?: string[];
+  possibleTopics?: string[];
 }

@@ -1,0 +1,282 @@
+{
+  "timestamp": "2025-04-11T11:15:19-07:00",
+  "location": "Rohnert Park, California, USA",
+  "issues": [
+    {
+      "category": "Economy",
+      "topics": [
+        {
+          "name": "Inflation and Cost of Living",
+          "description": "Rising prices for essentials like groceries, housing, and fuel remain a top concern for Americans.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "U.S. most important issues 2025",
+              "url": "https://www.statista.com/statistics/1362236/most-important-voter-issues-us/"
+            },
+            {
+              "title": "Know the New America: March 2025",
+              "url": "https://www.ipsos.com/en/know-new-america-march-2025"
+            }
+          ]
+        },
+        {
+          "name": "Job Market and Wages",
+          "description": "Concerns about job security, wage stagnation, and the impact of automation on employment.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Taxation and Government Spending",
+          "description": "Debates over tax policies, government spending, and national debt.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Housing Affordability",
+          "description": "Escalating rent and home prices, particularly in urban areas, making it challenging for young adults to achieve financial independence.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Sara Jacobs Thinks Democrats Can Win Back Young Voters by Acting on Housing and Childcare",
+              "url": "https://www.teenvogue.com/story/sara-jacobs-democrats-young-voters-housing-childcare"
+            }
+          ]
+        },
+        {
+          "name": "Student Loan Debt",
+          "description": "The burden of student loans affecting financial stability and delaying major life decisions.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "How economic concerns are shaping the youth vote in 2024",
+              "url": "https://www.brookings.edu/articles/how-economic-concerns-are-shaping-the-youth-vote-in-2024/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Healthcare",
+      "topics": [
+        {
+          "name": "Affordable Healthcare Access",
+          "description": "The high cost of healthcare and insurance premiums is a significant issue.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Several Economic Issues Seen as Top National Problems by Americans",
+              "url": "https://www.pewresearch.org/politics/2025/02/20/americans-continue-to-view-several-economic-issues-as-top-national-problems/"
+            }
+          ]
+        },
+        {
+          "name": "Reproductive Rights",
+          "description": "Debates over abortion rights, especially concerning late-term procedures.",
+          "public_concern": "High",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "category": "Education",
+      "topics": [
+        {
+          "name": "Curriculum Content",
+          "description": "Discussions around the inclusion of topics like gender identity and critical race theory in school curricula.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Affirmative Action in Admissions",
+          "description": "Controversies over race-based admissions policies in colleges and universities.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Affirmative Action Lives on for White Athletes, Legacy Admits",
+              "url": "https://www.commondreams.org/opinion/affirmative-action-lives-on-for-white-athletes-legacy-admits"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Civil Rights",
+      "topics": [
+        {
+          "name": "Transgender Rights",
+          "description": "Issues surrounding transgender individuals' rights, including participation in sports and access to healthcare.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Americans have grown more supportive of restrictions for trans people in recent years",
+              "url": "https://www.pewresearch.org/short-reads/2025/02/26/americans-have-grown-more-supportive-of-restrictions-for-trans-people-in-recent-years/"
+            },
+            {
+              "title": "The Impact of Transgender Sports Participation Bans",
+              "url": "https://williamsinstitute.law.ucla.edu/publications/impact-trans-sports-ban-eo/"
+            }
+          ]
+        },
+        {
+          "name": "Racial Discrimination",
+          "description": "Ongoing concerns about systemic racism and efforts to promote racial equality.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "LGBTQ+ Rights",
+          "description": "Advocacy for equal rights and protections for LGBTQ+ individuals.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "Colorblind Approach to Race",
+          "description": "The perspective that hyperfocus on racial identity has eroded race relations and that a more colorblind approach would improve social cohesion.",
+          "public_concern": "Moderate",
+          "sources": [
+            {
+              "title": "The Case for Colorblindness",
+              "url": "https://www.city-journal.org/the-case-for-colorblindness"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Immigration",
+      "topics": [
+        {
+          "name": "Border Security",
+          "description": "Debates over policies to secure the U.S. border and manage immigration.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "Path to Citizenship",
+          "description": "Discussions about providing undocumented immigrants with a pathway to legal status.",
+          "public_concern": "Moderate",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "category": "Environment",
+      "topics": [
+        {
+          "name": "Climate Change",
+          "description": "Concerns about the impact of climate change and environmental policies.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "Energy Policies",
+          "description": "Debates over fossil fuel use versus renewable energy sources.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Climate Action",
+          "description": "Demand for aggressive policies to combat climate change and transition to renewable energy sources.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Generation Z in the United States",
+              "url": "https://en.wikipedia.org/wiki/Generation_Z_in_the_United_States"
+            }
+          ]
+        },
+        {
+          "name": "Environmental Justice",
+          "description": "Addressing the disproportionate environmental burdens faced by marginalized communities.",
+          "public_concern": "Moderate",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "category": "Governance",
+      "topics": [
+        {
+          "name": "Election Integrity",
+          "description": "Issues related to voting rights, election security, and public trust in electoral processes.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "Government Transparency",
+          "description": "Calls for increased transparency and accountability in government operations.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Partisan Polarization",
+          "description": "Concerns about increasing political division and partisan tribalism in American society.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Political Polarization in the American Public",
+              "url": "https://www.pewresearch.org/politics/2025/03/15/political-polarization-in-the-american-public/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Public Safety",
+      "topics": [
+        {
+          "name": "Gun Control",
+          "description": "Debates over gun ownership rights and measures to prevent gun violence.",
+          "public_concern": "High",
+          "sources": []
+        },
+        {
+          "name": "Police Reform",
+          "description": "Discussions about law enforcement practices and accountability.",
+          "public_concern": "Moderate",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "category": "Technology",
+      "topics": [
+        {
+          "name": "Data Privacy",
+          "description": "Concerns about personal data protection and surveillance.",
+          "public_concern": "Moderate",
+          "sources": []
+        },
+        {
+          "name": "Artificial Intelligence",
+          "description": "Impacts of AI on employment, ethics, and regulation.",
+          "public_concern": "Moderate",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "category": "Youth Concerns",
+      "topics": [
+        {
+          "name": "Mental Health Access",
+          "description": "Increasing need for affordable and accessible mental health services for young people.",
+          "public_concern": "High",
+          "sources": [
+            {
+              "title": "Gen Z's Top Political Priorities",
+              "url": "https://circle.tufts.edu/latest-research/gen-zs-top-political-priorities"
+            }
+          ]
+        },
+        {
+          "name": "Digital Rights and Internet Freedom",
+          "description": "Concerns about online censorship, net neutrality, and digital privacy among younger voters.",
+          "public_concern": "Moderate",
+          "sources": []
+        }
+      ]
+    }
+  ]
+}

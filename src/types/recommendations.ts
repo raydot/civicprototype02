@@ -1,4 +1,4 @@
-import { Mode } from '@/contexts/ModeContext';
+import { Mode } from '@/types/mode';
 
 export type AlignmentLevel = '✅' | '⚠️' | '❌';
 
@@ -58,6 +58,7 @@ export interface CivicEducationResource {
   description: string;
   source: 'iCivics' | 'National Constitution Center' | 'Civic Genius' | 'Ballotpedia' | 'Annenberg Classroom' | 'Center for Civic Education' | 'Khan Academy Civics';
   link: string;
+  url: string;
   topics: string[];
   type: 'article' | 'video' | 'interactive';
 }

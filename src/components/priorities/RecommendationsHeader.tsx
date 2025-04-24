@@ -5,23 +5,29 @@ import { useMode } from '@/contexts/ModeContext';
 export interface RecommendationsHeaderProps {
   recommendationsData: RecommendationsData;
   onRemovePriority: (priority: string) => void;
+  sectionTitle?: string; 
 }
 
 export const RecommendationsHeader = ({
   recommendationsData,
   onRemovePriority,
+  sectionTitle
 }: RecommendationsHeaderProps) => {
   const { mode } = useMode();
   const isDemo = mode === 'demo';
 
+  const showTitle = sectionTitle !== undefined;
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-left">Your Recommendations</h2>
-        <ShareRecommendations
-          recommendationsData={recommendationsData}
-        />
-      </div>
+      {showTitle && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold text-left">{sectionTitle}</h2>
+          <ShareRecommendations
+            recommendationsData={recommendationsData}
+          />
+        </div>
+      )}
       
       <div className="text-left space-y-2">
         {isDemo ? (

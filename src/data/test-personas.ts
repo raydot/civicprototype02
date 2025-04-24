@@ -31,6 +31,19 @@ export const personas: TestPersona[] = [
       "I'm afraid AI could lead to scary Sci-fy like stuff, but it's too hard for me to understand."
     ],
     zipCode: "78701" // Austin, TX
+  },
+  {
+    name: "Gracie",
+    description: "Biracial Latina + White, pro-life, faith-led, safety-minded",
+    priorities: [
+      "Abortion ends a life — we need to support moms instead.",
+      "I love my church and I want laws that respect that.",
+      "I back the police — but they need to earn our trust.",
+      "We need more mental health support, especially for families and veterans.",
+      "I believe in traditional values — family comes first.",
+      "I want to believe elections are fair — but I have doubts."
+    ],
+    zipCode: "85001" // Phoenix, AZ
   }
 ];
 

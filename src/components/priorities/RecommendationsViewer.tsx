@@ -1,24 +1,32 @@
-import { DashboardData, AlignmentLevel, CandidateRecommendation } from '@/types/recommendations';
+import { DashboardData, AlignmentLevel, CandidateRecommendation, BallotMeasure as BallotMeasureType, InterestGroup as InterestGroupType, Petition as PetitionType, CivicEducationResource } from '@/types/recommendations';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ExternalLinkIcon, MailIcon, Share2Icon } from 'lucide-react';
-import { Mode } from '@/contexts/ModeContext';
-import { RecommendationsData } from '@/types/api';
+import { Mode, useMode } from "@/contexts/ModeContext";
+import { RecommendationsData, Candidate, BallotMeasure, InterestGroup, Petition } from '@/types/api';
 import { RecommendationsList } from '@/components/RecommendationsList';
-import { useMode } from "@/contexts/ModeContext";
 import { CandidateTable } from "./CandidateTable";
 import { BallotMeasuresTable } from "./BallotMeasuresTable";
 import { EmailSection } from "./EmailSection";
 import { ResourcesSection } from "./ResourcesSection";
 import { Share } from "lucide-react";
+import { PriorityMappingTable } from "./PriorityMappingTable";
+import { PolicyRecommendations } from '@/components/PolicyRecommendations';
+import { RecommendationsHeader } from './RecommendationsHeader';
+import { useState } from 'react';
+import { usePrioritiesAnalysis } from '@/hooks/use-priorities-analysis';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorFallback } from '@/components/ErrorFallback';
 
 interface RecommendationsViewerProps {
   recommendations: RecommendationsData;
-  mode: Mode;
+  mode?: Mode;
   onShare?: () => void;
+  onUpdatePriorities?: (priorities: string[]) => void;
+  isUpdating?: boolean;
 }
 
 const AlignmentBadge = ({ level }: { level: AlignmentLevel }) => {
@@ -73,74 +81,183 @@ const CandidateCard = ({ candidate }: { candidate: CandidateRecommendation }) =>
 export function RecommendationsViewer({ 
   recommendations, 
   mode, 
-  onShare 
+  onShare,
+  onUpdatePriorities,
+  isUpdating = false
 }: RecommendationsViewerProps) {
-  const { hasUpcomingBallots } = useMode();
+  const { mode: contextMode, hasUpcomingBallots } = useMode();
+  const { isLoading: isAnalysisLoading } = usePrioritiesAnalysis();
+  
+  // Use mode from props if provided, otherwise use from context
+  const activeMode = mode || contextMode;
   
   if (!recommendations?.recommendations) return null;
 
-  const showElectionContent = mode === 'demo' || (mode === 'current' && hasUpcomingBallots);
+  const showElectionContent = activeMode === 'demo' || (activeMode === 'current' && hasUpcomingBallots);
+
+  // Transform mapped priorities for the PriorityMappingTable
+  const mappedPrioritiesForTable = recommendations.analysis?.mappedPriorities?.map(priority => ({
+    original: priority.original,
+    mappedTerms: priority.mappedTerms,
+    category: priority.category,
+    sentiment: priority.sentiment,
+    confidence: priority.confidence,
+    needsClarification: priority.needsClarification,
+    possibleTopics: priority.possibleTopics
+  })) || [];
+
+  // Handle priority updates
+  const handleUpdatePriorities = (updatedPriorities: string[]) => {
+    if (onUpdatePriorities) {
+      onUpdatePriorities(updatedPriorities);
+    }
+  };
+
+  // Convert API types to component types
+  const convertToCandidateRecommendation = (candidate: Candidate): CandidateRecommendation => ({
+    name: candidate.name,
+    office: candidate.office || 'Unknown Office',
+    summary: candidate.positionSummary || '',
+    match: candidate.alignment === '✅' ? 'full' : candidate.alignment === '⚠️' ? 'partial' : 'conflict',
+    platformHighlights: candidate.platformHighlights || [],
+    rationale: candidate.rationale || '',
+    officialWebsite: candidate.officialWebsite || '#',
+    party: candidate.party || ''
+  });
+
+  const convertToBallotMeasure = (measure: BallotMeasure): BallotMeasureType => ({
+    id: measure.title.replace(/\s+/g, '-').toLowerCase(),
+    title: measure.title,
+    summary: measure.description,
+    supporters: measure.supporters,
+    opposers: measure.opposers,
+    userConcernMapping: measure.userConcernMapping,
+    ballotpediaLink: measure.ballotpediaLink
+  });
+
+  const convertToInterestGroup = (group: InterestGroup): InterestGroupType => ({
+    name: group.name,
+    description: group.description,
+    website: group.website || '#',
+    priorities: [],
+    relevance: ''
+  });
+
+  const convertToPetition = (petition: Petition): PetitionType => ({
+    title: petition.title,
+    description: petition.description,
+    link: petition.changeOrgUrl || '#',
+    relevantPriorities: [],
+    signatures: 0
+  });
+
+  const convertToEducationResource = (resource: any): CivicEducationResource => ({
+    title: resource.topic || '',
+    description: resource.description,
+    source: resource.source as any,
+    link: resource.url || '#',
+    topics: [],
+    type: resource.type
+  });
+
+  // Convert the data
+  const candidates = recommendations.recommendations.candidates?.map(convertToCandidateRecommendation) || [];
+  const ballotMeasures = recommendations.recommendations.ballotMeasures?.map(convertToBallotMeasure) || [];
+  const interestGroups = recommendations.recommendations.interestGroups?.map(convertToInterestGroup) || [];
+  const petitions = recommendations.recommendations.petitions?.map(convertToPetition) || [];
+  const educationResources = recommendations.recommendations.educationResources?.map(convertToEducationResource) || [];
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Your Recommendations</h2>
-          <p className="text-muted-foreground">
-            {mode === 'current' 
-              ? 'Current Election'
-              : 'DEMO: November 2024'}
-          </p>
-        </div>
-        {onShare && (
-          <Button onClick={onShare} variant="outline" size="sm">
-            <Share className="mr-2 h-4 w-4" />
-            Share
-          </Button>
-        )}
-      </div>
+      {/* Main Header - only show this one */}
+      <RecommendationsHeader 
+        recommendationsData={recommendations}
+        onRemovePriority={() => {}}
+        sectionTitle="Your Recommendations"
+      />
 
-      {/* Election Content */}
-      {showElectionContent && (
-        <div className="space-y-8">
-          {/* Candidates */}
-          {recommendations.recommendations.candidates && 
-            Object.entries(recommendations.recommendations.candidates)
-              .map(([office, candidates]) => (
-                <CandidateTable
-                  key={office}
-                  office={office}
-                  candidates={candidates}
-                />
-              ))}
-
-          {/* Ballot Measures */}
-          {recommendations.recommendations.ballotMeasures && 
-            recommendations.recommendations.ballotMeasures.length > 0 && (
-              <BallotMeasuresTable
-                measures={recommendations.recommendations.ballotMeasures}
-              />
-            )}
+      {/* Priority Mapping Table - with editable priorities */}
+      {mappedPrioritiesForTable.length > 0 && (
+        <div className="mb-8">
+          <PriorityMappingTable 
+            mappedPriorities={mappedPrioritiesForTable} 
+            onUpdatePriorities={onUpdatePriorities ? handleUpdatePriorities : undefined}
+            isUpdating={isUpdating}
+          />
         </div>
       )}
 
-      {/* Always Show These Sections */}
-      <EmailSection
-        drafts={recommendations.recommendations.emailDrafts}
-      />
+      {/* Policy Recommendations */}
+      {recommendations.recommendations.policyRecommendations && (
+        <div className="mb-8">
+          <PolicyRecommendations recommendations={recommendations.recommendations.policyRecommendations} />
+        </div>
+      )}
 
-      <ResourcesSection
-        interestGroups={recommendations.recommendations.interestGroups}
-        petitions={recommendations.recommendations.petitions}
-        civicEducation={recommendations.recommendations.civicEducation}
-      />
-
-      {/* Recommendations List */}
-      <RecommendationsList
-        recommendations={recommendations.recommendations}
-        mode={mode}
-      />
+      {/* Tabs for different recommendation types */}
+      <Tabs defaultValue="candidates" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="candidates">Candidates</TabsTrigger>
+          <TabsTrigger value="ballot">Ballot Measures</TabsTrigger>
+          <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsTrigger value="email">Email</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="candidates" className="space-y-4 pt-4">
+          {showElectionContent && candidates && candidates.length > 0 ? (
+            <ErrorBoundary
+              FallbackComponent={(props) => (
+                <ErrorFallback {...props} componentName="CandidateTable" />
+              )}
+              onReset={() => {
+                console.log('CandidateTable error boundary reset');
+              }}
+            >
+              <CandidateTable candidates={candidates} />
+            </ErrorBoundary>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground">No candidate recommendations available for your current settings.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="ballot" className="space-y-4 pt-4">
+          {showElectionContent && ballotMeasures.length > 0 && (
+            <ErrorBoundary
+              FallbackComponent={(props) => (
+                <ErrorFallback {...props} componentName="BallotMeasuresTable" />
+              )}
+              onReset={() => {
+                console.log('BallotMeasuresTable error boundary reset');
+              }}
+            >
+              <BallotMeasuresTable measures={ballotMeasures} />
+            </ErrorBoundary>
+          )}
+          {(!showElectionContent || ballotMeasures.length === 0) && (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground">No ballot measure recommendations available for your current settings.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="resources" className="space-y-4 pt-4">
+          <ResourcesSection 
+            interestGroups={interestGroups}
+            petitions={petitions}
+            educationResources={educationResources}
+          />
+        </TabsContent>
+        
+        <TabsContent value="email" className="space-y-4 pt-4">
+          <EmailSection recommendations={recommendations} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
