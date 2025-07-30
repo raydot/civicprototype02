@@ -8,6 +8,12 @@ BUN_VERSION = "1.0.0"
 # Enable Bun on Netlify
 USE_BUN = "true"
 
+# Explicitly disable Next.js plugin since this is a Vite app
+[[plugins]]
+package = "@netlify/plugin-nextjs"
+[plugins.inputs]
+disable = true
+
 # SPA routing - redirect all routes to index.html
 [[redirects]]
 from = "/*"
