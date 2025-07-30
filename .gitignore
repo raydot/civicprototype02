@@ -22,3 +22,60 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# API keys and sensitive configuration
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+config/secrets.js
+config/keys.js
+
+# NextAuth.js
+.next-auth
+
+# Supabase
+.supabase
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
+*.tmp
+
+# OS generated files
+Thumbs.db
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Security and monitoring logs
+security.log
+access.log
+error.log
+
+# Temporary files
+temp/
+tmp/
+*.temp
+
+# Package manager lock files (keep only bun.lockb)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
