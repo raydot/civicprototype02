@@ -1,5 +1,5 @@
-import { initialPolicyMappings } from '@/data/policy-mappings';
-import { enhancedPolicyMappings } from '@/data/enhanced-policy-mappings';
+import { initialPolicyMappings } from '@/PPMEMappingData/policy-mappings';
+import { enhancedPolicyMappings } from '@/PPMEMappingData/enhanced-policy-mappings';
 import { detectPriorityConflicts } from '@/utils/priorityConflicts';
 import { MappedPriority, PolicyData, PriorityAnalysis } from '@/types/policy-mappings';
 import { AIClarificationService } from './ai-clarification';

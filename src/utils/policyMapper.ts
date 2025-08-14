@@ -1,4 +1,4 @@
-import issueTerminology from '@/config/issueTerminology.json';
+import issueTerminology from '@/PPMEMappingData/issueTerminology.json';
 import { IssueTerminology, PolicyTerm } from '@/types/terminology';
 
 interface NuancedMapping {

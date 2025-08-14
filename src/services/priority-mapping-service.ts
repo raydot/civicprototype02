@@ -1,5 +1,5 @@
 import { PoliticalIssue, PoliticalCategory, MappedPriority, PriorityAnalysis, ConflictDefinition } from '@/types/priority-mapping';
-import { POLITICAL_ISSUES, ISSUE_CONFLICTS } from '@/data/political-issues';
+import { POLITICAL_ISSUES, ISSUE_CONFLICTS } from '@/PPMEMappingData/political-issues';
 
 export class PriorityMappingService {
   private normalizeText(text: string): string {

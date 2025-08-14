@@ -1,5 +1,5 @@
 import { MappedPriority, ConflictResult } from '@/types/policy-mappings';
-import { initialPolicyMappings } from '@/data/policy-mappings';
+import { initialPolicyMappings } from '@/PPMEMappingData/policy-mappings';
 
 export function detectPriorityConflicts(mappedPriorities: MappedPriority[]): ConflictResult[] {
   const conflicts: ConflictResult[] = [];

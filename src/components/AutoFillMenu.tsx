@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TestPersona, personas, getRandomPriorities, getRandomZipCode } from "@/data/test-personas";
+import { TestPersona, personas, getRandomPriorities, getRandomZipCode } from "@/PPMEMappingData/test-personas";
 import { VoterFormValues } from "@/schemas/voterFormSchema";
 import { Mode } from "@/contexts/ModeContext";
 import { Sparkles } from "lucide-react";

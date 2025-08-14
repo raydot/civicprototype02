@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getRandomZipCode, getRandomPriorities } from "@/data/testPersonas";
+import { getRandomZipCode, getRandomPriorities } from "@/PPMEMappingData/testPersonas";
 import { VoterFormValues } from "@/schemas/voterFormSchema";
 import { useMode } from "@/contexts/ModeContext";
 

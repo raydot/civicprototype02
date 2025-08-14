@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { initialPolicyMappings } from '@/data/policy-mappings';
-import { enhancedPolicyMappings } from '@/data/enhanced-policy-mappings';
+import { initialPolicyMappings } from '@/PPMEMappingData/policy-mappings';
+import { enhancedPolicyMappings } from '@/PPMEMappingData/enhanced-policy-mappings';
 import { PolicyMapper } from '@/services/policy-mapper';
 
 interface MappingRow {

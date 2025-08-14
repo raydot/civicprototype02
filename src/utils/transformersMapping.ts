@@ -1,7 +1,7 @@
 // This file provides utility functions for mapping user priorities to policy terms
 // using a simplified rule-based approach
 
-import issueTerminology from '@/config/issueTerminology.json';
+import issueTerminology from '@/PPMEMappingData/issueTerminology.json';
 import { detectPriorityConflicts, ConflictResult } from './priorityConflicts';
 
 // Keep track of model initialization status

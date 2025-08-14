@@ -1,5 +1,5 @@
 
-import { priorityPool } from "@/data/testPersonas";
+import { priorityPool } from "@/PPMEMappingData/testPersonas";
 
 // Function to generate a random US ZIP code
 export const generateRandomZipCode = () => {

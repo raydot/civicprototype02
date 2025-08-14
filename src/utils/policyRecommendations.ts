@@ -1,5 +1,5 @@
 import { ConflictResult } from './priorityConflicts';
-import issueTerminology from '@/config/issueTerminology.json';
+import issueTerminology from '@/PPMEMappingData/issueTerminology.json';
 
 export interface PolicyRecommendation {
   title: string;
