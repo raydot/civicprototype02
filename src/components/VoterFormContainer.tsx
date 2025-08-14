@@ -31,6 +31,7 @@ import { z } from 'zod'
 import { AutoFillMenu } from '@/components/AutoFillMenu'
 import { usePPMEMapping } from '@/hooks/use-ppme-mapping'
 import { PPMEMappedPriority, PPMEFeedback } from '@/types/ppme'
+import { useDebugMode } from '@/utils/debugMode'
 
 type ModeType = 'current' | 'demo'
 
@@ -58,7 +59,7 @@ export const VoterFormContainer = ({
   const [showMappingOnly, setShowMappingOnly] = useState(false)
   const [showRecommendations, setShowRecommendations] = useState(false)
   const { toast } = useToast()
-  
+
   // PPME integration
   const {
     mappingData,
@@ -68,7 +69,7 @@ export const VoterFormContainer = ({
     submitFeedback,
     getClarification,
     clearError,
-    reset: resetPPME
+    reset: resetPPME,
   } = usePPMEMapping()
 
   // Form for ZIP code
@@ -92,7 +93,7 @@ export const VoterFormContainer = ({
       toast({
         title: 'Mapping Error',
         description: ppmeError,
-        variant: 'destructive'
+        variant: 'destructive',
       })
       clearError()
     }
@@ -103,14 +104,14 @@ export const VoterFormContainer = ({
     if (mappingData?.mappedPriorities?.length > 0) {
       setShowMappingOnly(true)
       setShowRecommendations(false)
-      
+
       // Show confidence summary
       const avgConfidence = Math.round(mappingData.overallConfidence * 100)
       const needsClarification = mappingData.needsClarification.length
-      
+
       toast({
         title: 'Priorities Mapped',
-        description: `Mapping completed with ${avgConfidence}% average confidence${needsClarification > 0 ? `. ${needsClarification} items need clarification.` : '.'}`
+        description: `Mapping completed with ${avgConfidence}% average confidence${needsClarification > 0 ? `. ${needsClarification} items need clarification.` : '.'}`,
       })
     }
   }, [mappingData, toast])
@@ -125,28 +126,28 @@ export const VoterFormContainer = ({
 
   const handleUpdatePriorities = async (updatedPriorities: string[]) => {
     const currentZipCode = zipForm.getValues().zipCode
-    
+
     // Re-map priorities using PPME
     await mapPriorities({
       priorities: updatedPriorities,
       zipCode: currentZipCode,
-      mode: selectedMode
+      mode: selectedMode,
     })
   }
-  
+
   const handleSubmitFeedback = async (feedback: PPMEFeedback) => {
     await submitFeedback(feedback)
     toast({
       title: 'Feedback Submitted',
-      description: 'Thank you for helping improve our mapping system!'
+      description: 'Thank you for helping improve our mapping system!',
     })
   }
-  
+
   const handleGetClarification = async (priority: string) => {
     await getClarification(priority)
     toast({
       title: 'Getting Clarification',
-      description: 'Loading alternative mapping options...'
+      description: 'Loading alternative mapping options...',
     })
   }
 
@@ -192,14 +193,14 @@ export const VoterFormContainer = ({
       await mapPriorities({
         priorities: values.priorities.filter((p: string) => p.trim()),
         zipCode: currentZipCode,
-        mode: selectedMode
+        mode: selectedMode,
       })
     } catch (error) {
       console.error('Error in PPME mapping:', error)
       toast({
         title: 'Mapping Error',
         description: 'Failed to analyze your priorities. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       })
     }
   }
@@ -221,34 +222,35 @@ export const VoterFormContainer = ({
       toast({
         title: 'No Mapping Data',
         description: 'Please submit your priorities first.',
-        variant: 'destructive'
+        variant: 'destructive',
       })
       return
     }
-    
+
     try {
       // Convert PPME data back to original format for recommendations
       const formValues: VoterFormValues = {
         mode: selectedMode,
         zipCode: zipForm.getValues().zipCode,
-        priorities: mappingData.mappedPriorities.map(p => p.original)
+        priorities: mappingData.mappedPriorities.map(p => p.original),
       }
-      
+
       setShowMappingOnly(false)
       setShowRecommendations(true)
-      
+
       await onSubmit(formValues)
-      
+
       toast({
         title: 'Generating recommendations',
-        description: 'Preparing your personalized recommendations based on your mapped priorities.'
+        description:
+          'Preparing your personalized recommendations based on your mapped priorities.',
       })
     } catch (error) {
       console.error('Error generating recommendations:', error)
       toast({
         title: 'Error',
         description: 'Failed to generate recommendations. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       })
     }
   }
@@ -268,6 +270,8 @@ export const VoterFormContainer = ({
       description: 'Random ZIP and priorities set.',
     })
   }
+
+  const { isEnabled: isDebugEnabled } = useDebugMode()
 
   return (
     <div className="relative space-y-4">
@@ -350,7 +354,9 @@ export const VoterFormContainer = ({
             marginBottom: 8,
           }}
         >
-          <AutoFillMenu onSelect={handleAutoFill} mode={selectedMode} />
+          {isDebugEnabled && (
+            <AutoFillMenu onSelect={handleAutoFill} mode={selectedMode} />
+          )}
         </div>
 
         {!recommendations && (
@@ -366,8 +372,8 @@ export const VoterFormContainer = ({
               <CardHeader className="py-3 px-4">
                 <CardTitle>Your Voting Priorities</CardTitle>
                 <CardDescription className="text-sm">
-                  Tell us what matters most to you, and we'll help match you with
-                  candidates and measures that align with your values.
+                  Tell us what matters most to you, and we'll help match you
+                  with candidates and measures that align with your values.
                 </CardDescription>
               </CardHeader>
               <CardContent className="py-2 px-4">
@@ -387,22 +393,23 @@ export const VoterFormContainer = ({
             <CardHeader className="py-3 px-4">
               <CardTitle className="text-base">Priorities Mapping</CardTitle>
               <CardDescription className="mt-1 text-sm">
-                We have mapped your priorities to policy terms using our Political Priorities Mapping Engine.
-                Review the mappings below and provide feedback to help us improve!
+                We have mapped your priorities to policy terms using our
+                Political Priorities Mapping Engine. Review the mappings below
+                and provide feedback to help us improve!
               </CardDescription>
             </CardHeader>
             <CardContent className="py-2 px-4">
-              <PriorityMappingTable 
+              <PriorityMappingTable
                 mappedPriorities={mappingData.mappedPriorities}
                 onUpdatePriorities={handleUpdatePriorities}
                 onSubmitFeedback={handleSubmitFeedback}
                 onGetClarification={handleGetClarification}
                 isUpdating={isPPMELoading}
               />
-              
+
               <div className="mt-4">
-                <Button 
-                  onClick={handleGetRecommendations} 
+                <Button
+                  onClick={handleGetRecommendations}
                   className="w-full h-9 text-sm"
                   variant="default"
                   disabled={isPPMELoading}

@@ -16,6 +16,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorFallback } from '@/components/ErrorFallback'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { GripVertical } from 'lucide-react'
+import { useDebugMode } from '@/utils/debugMode'
 
 // Define a schema just for priorities
 const PrioritiesSchema = z.object({
@@ -41,6 +42,8 @@ export function VoterForm({
       priorities: ['', '', '', '', '', ''],
     },
   })
+
+  const { isEnabled: isDebugEnabled } = useDebugMode()
 
   const handleRandomPriorities = () => {
     // Random legitimate US zip codes from various regions
@@ -220,15 +223,17 @@ export function VoterForm({
           </div>
 
           <div className="flex justify-between gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-9 text-sm"
-              onClick={handleRandomPriorities}
-            >
-              Random
-            </Button>
+            {isDebugEnabled && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 text-sm"
+                onClick={handleRandomPriorities}
+              >
+                Random
+              </Button>
+            )}
             <Button type="submit" className="h-9 text-sm" disabled={isLoading}>
               {isLoading ? 'Analyzing...' : 'Submit'}
             </Button>
