@@ -11,16 +11,88 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorFallback } from '@/components/ErrorFallback'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import {
+  DndContext,
+  closestCenter,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { useDebugMode } from '@/utils/debugMode'
 
 // Define a schema just for priorities
 const PrioritiesSchema = z.object({
   priorities: z.array(z.string()).min(1, 'At least one priority is required'),
+})
+
+// Move SortableItem outside the main component to prevent recreation
+const SortableItem = React.memo(({ id, index, form }: { id: string; index: number; form: any }) => {
+  console.log(`SortableItem ${index} rendering`)
+  
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    zIndex: isDragging ? 1000 : 'auto',
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-1 ${isDragging ? 'shadow-lg border-2 border-blue-300 bg-white rounded' : ''}`}
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="px-2 py-1 self-stretch flex items-center cursor-grab hover:cursor-grabbing hover:bg-muted/50 rounded transition-all duration-200 active:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        tabIndex={-1}
+      >
+        <GripVertical className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+      </div>
+      <FormField
+        control={form.control}
+        name={`priorities.${index}`}
+        render={({ field }) => (
+          <FormItem className="flex-1 space-y-0">
+            <FormControl>
+              <Input
+                placeholder={`Priority ${parseInt(id.split('-')[1]) + 1}`}
+                className="h-9"
+                tabIndex={index + 1}
+                onFocus={() => console.log(`Input ${index} focused`)}
+                onBlur={() => console.log(`Input ${index} blurred`)}
+                onKeyDown={(e) => console.log(`Input ${index} keydown:`, e.key)}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  )
+}, (prevProps, nextProps) => {
+  // Only re-render if id or index changes, ignore form object changes
+  return prevProps.id === nextProps.id && prevProps.index === nextProps.index
 })
 
 type PrioritiesFormValues = z.infer<typeof PrioritiesSchema>
@@ -44,6 +116,20 @@ export function VoterForm({
   })
 
   const { isEnabled: isDebugEnabled } = useDebugMode()
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [itemOrder, setItemOrder] = useState<number[]>([0, 1, 2, 3, 4, 5])
+
+  // Configure sensors for better drag experience
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleRandomPriorities = () => {
     // Random legitimate US zip codes from various regions
@@ -134,23 +220,61 @@ export function VoterForm({
     console.log(`Generated random data: ZIP: ${randomZip}, 6 priorities`)
   }
 
-  // Handle drag and drop reordering of priorities
-  const handleDragEnd = (result: any) => {
-    // Dropped outside the list
-    if (!result.destination) {
-      return
+
+  // Drag overlay component for smooth visual feedback
+  const DragOverlayItem = ({ originalIndex }: { originalIndex: number }) => {
+    const currentValues = form.getValues('priorities')
+    // Find the current position of this original index in the itemOrder array
+    const currentPosition = itemOrder.findIndex(index => index === originalIndex)
+    const displayValue = currentValues[currentPosition] || `Priority ${originalIndex + 1}`
+    
+    return (
+      <div className="bg-white shadow-2xl border-2 border-blue-400 rounded-lg overflow-hidden opacity-95 transform rotate-2 flex items-center gap-1 p-2">
+        <div className="px-2 py-1 flex items-center">
+          <GripVertical className="h-4 w-4 text-blue-600" />
+        </div>
+        <Input
+          value={displayValue}
+          className="h-9 pointer-events-none flex-1"
+          readOnly
+        />
+      </div>
+    )
+  }
+
+  // Handle drag start
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    setActiveId(null)
+
+    if (over && active.id !== over.id) {
+      const activeOriginalIndex = parseInt(active.id.toString().split('-')[1])
+      const overOriginalIndex = parseInt(over.id.toString().split('-')[1])
+      
+      // Find current positions in the itemOrder array
+      const oldIndex = itemOrder.findIndex(index => index === activeOriginalIndex)
+      const newIndex = itemOrder.findIndex(index => index === overOriginalIndex)
+
+      // First update the visual order immediately
+      const newItemOrder = [...itemOrder]
+      const [reorderedOrderItem] = newItemOrder.splice(oldIndex, 1)
+      newItemOrder.splice(newIndex, 0, reorderedOrderItem)
+      setItemOrder(newItemOrder)
+
+      // Then update form values after a short delay to let the animation complete
+      setTimeout(() => {
+        const currentValues = form.getValues('priorities')
+        const newValues = [...currentValues]
+        const [reorderedItem] = newValues.splice(oldIndex, 1)
+        newValues.splice(newIndex, 0, reorderedItem)
+        form.setValue('priorities', newValues)
+      }, 150) // Small delay to let the visual transition complete
     }
-
-    const currentPriorities = form.getValues().priorities || []
-    const reorderedPriorities = Array.from(currentPriorities)
-
-    // Remove the item from its original position
-    const [removed] = reorderedPriorities.splice(result.source.index, 1)
-    // Insert it at the destination position
-    reorderedPriorities.splice(result.destination.index, 0, removed)
-
-    // Update the form values with the new order
-    form.setValue('priorities', reorderedPriorities)
   }
 
   return (
@@ -168,58 +292,34 @@ export function VoterForm({
               </FormLabel>
             </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="priorities">
-                {provided => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-2"
-                  >
-                    {Array.from({ length: 6 }).map((_, index) => (
-                      <Draggable
-                        key={`priority-${index}`}
-                        draggableId={`priority-${index}`}
-                        index={index}
-                      >
-                        {provided => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center gap-1"
-                          >
-                            <div
-                              {...provided.dragHandleProps}
-                              className="px-1 self-stretch flex items-center cursor-grab"
-                            >
-                              <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <FormField
-                              control={form.control}
-                              name={`priorities.${index}`}
-                              render={({ field }) => (
-                                <FormItem className="flex-1 mb-0">
-                                  <FormControl>
-                                    <Input
-                                      placeholder={`Priority ${index + 1}`}
-                                      className="h-9"
-                                      maxLength={250}
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={itemOrder.map(i => `priority-${i}`)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-2">
+                  {itemOrder.map((originalIndex, currentIndex) => (
+                    <SortableItem
+                      key={`priority-${originalIndex}`}
+                      id={`priority-${originalIndex}`}
+                      index={currentIndex}
+                      form={form}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+
+              <DragOverlay>
+                {activeId ? (
+                  <DragOverlayItem originalIndex={parseInt(activeId.split('-')[1])} />
+                ) : null}
+              </DragOverlay>
+            </DndContext>
           </div>
 
           <div className="flex justify-between gap-2">
