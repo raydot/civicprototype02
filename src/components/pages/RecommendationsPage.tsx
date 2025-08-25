@@ -1,17 +1,9 @@
 import { RecommendationsData } from '@/types/api'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary'
-import { ErrorFallback } from '@/components/ErrorFallback'
 import { RecommendationsViewer } from '@/components/priorities/RecommendationsViewer'
+import { PageWrapper } from '@/components/ui/PageWrapper'
 
 interface RecommendationsPageProps {
-  recommendations: any
+  recommendations: RecommendationsData
   mode?: 'current' | 'demo'
   onUpdatePriorities?: (priorities: string[]) => void
   isUpdating?: boolean
@@ -24,22 +16,13 @@ export const RecommendationsPage = ({
   isUpdating = false
 }: RecommendationsPageProps) => {
   return (
-    <div className="space-y-4">
-      <ReactErrorBoundary
-        FallbackComponent={props => (
-          <ErrorFallback {...props} componentName="RecommendationsPage" />
-        )}
-        onReset={() => {
-          console.log('RecommendationsPage error boundary reset')
-        }}
-      >
-        <RecommendationsViewer
-          recommendations={recommendations}
-          mode={mode}
-          onUpdatePriorities={onUpdatePriorities}
-          isUpdating={isUpdating}
-        />
-      </ReactErrorBoundary>
-    </div>
+    <PageWrapper componentName="RecommendationsPage">
+      <RecommendationsViewer
+        recommendations={recommendations}
+        mode={mode}
+        onUpdatePriorities={onUpdatePriorities}
+        isUpdating={isUpdating}
+      />
+    </PageWrapper>
   )
 }

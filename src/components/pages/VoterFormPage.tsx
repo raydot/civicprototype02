@@ -2,8 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import React, { useState } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
-import { ErrorFallback } from '@/components/ErrorFallback'
+import { PageWrapper } from '@/components/ui/PageWrapper'
 import {
   DndContext,
   closestCenter,
@@ -23,22 +22,14 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDebugMode } from '@/utils/debugMode'
+import { DragHandle } from '@/components/ui/icons'
+import { Button } from '@/components/ui/button'
 
 // Define schema for ZIP code and priorities
 const VoterFormSchema = z.object({
   zipCode: z.string().min(5, 'ZIP code is required').max(10, 'Invalid ZIP code'),
   priorities: z.array(z.string()).min(1, 'At least one priority is required'),
 })
-
-// Custom drag handle component - styled as dots like wireframe
-const DragHandle = () => (
-  <div className="flex flex-col gap-1 p-2">
-    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-  </div>
-)
 
 // Move SortableItem outside the main component to prevent recreation
 const SortableItem = React.memo(({ id, index, form, errors }: { id: string; index: number; form: any; errors: any }) => {
@@ -96,19 +87,19 @@ const SortableItem = React.memo(({ id, index, form, errors }: { id: string; inde
 
 type VoterFormValues = z.infer<typeof VoterFormSchema>
 
-interface VoterFormProps {
+interface VoterFormPageProps {
   onSubmit: (values: VoterFormValues) => void
   isLoading?: boolean
   onRandomZipCode?: (zipCode: string) => void
   initialValues?: Partial<VoterFormValues>
 }
 
-export function VoterForm({
+export function VoterFormPage({
   onSubmit,
   isLoading = false,
   onRandomZipCode,
   initialValues,
-}: VoterFormProps) {
+}: VoterFormPageProps) {
   const form = useForm<VoterFormValues>({
     resolver: zodResolver(VoterFormSchema),
     defaultValues: {
@@ -281,11 +272,7 @@ export function VoterForm({
   }
 
   return (
-    <ErrorBoundary
-      FallbackComponent={props => (
-        <ErrorFallback {...props} componentName="VoterForm" />
-      )}
-    >
+    <PageWrapper componentName="VoterFormPage">
       <div className="bg-white">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* ZIP Code Section */}
@@ -349,24 +336,25 @@ export function VoterForm({
           {/* Submit Section */}
           <div className="flex justify-between items-center gap-2">
             {isDebugEnabled && (
-              <button
+              <Button
                 type="button"
-                className="px-4 py-2 border border-gray-300 rounded text-sm bg-white hover:bg-gray-50 transition-colors"
+                variant="outline"
                 onClick={handleRandomPriorities}
               >
                 Random
-              </button>
+              </Button>
             )}
-            <button 
+            <Button 
               type="submit" 
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-gray-200 text-black rounded text-sm font-normal hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1"
+              variant="secondary"
             >
               {isLoading ? 'Analyzing...' : 'Submit'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
-    </ErrorBoundary>
+    </PageWrapper>
   )
 }

@@ -1,12 +1,19 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { VoterForm } from './VoterForm';
-import { Mode } from '@/contexts/ModeContext';
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { VoterForm } from './pages/VoterFormPage'
+import { Mode } from '@/contexts/ModeContext'
 
 const testScenarios = [
   {
     name: 'Environmental vs Economic Growth',
-    description: 'Testing conflict between environmental protection and fossil fuel industry support',
+    description:
+      'Testing conflict between environmental protection and fossil fuel industry support',
     values: {
       mode: 'demo' as Mode,
       zipCode: '12345',
@@ -16,9 +23,9 @@ const testScenarios = [
         'Increase renewable energy investment',
         'Expand offshore drilling',
         '',
-        ''
-      ]
-    }
+        '',
+      ],
+    },
   },
   {
     name: 'Tax Policy Conflicts',
@@ -32,9 +39,9 @@ const testScenarios = [
         'Reduce government spending',
         'Expand Medicare coverage',
         '',
-        ''
-      ]
-    }
+        '',
+      ],
+    },
   },
   {
     name: 'Immigration Policy',
@@ -48,9 +55,9 @@ const testScenarios = [
         'Protect DACA recipients',
         'Reduce illegal immigration',
         '',
-        ''
-      ]
-    }
+        '',
+      ],
+    },
   },
   {
     name: 'Healthcare Policy',
@@ -64,24 +71,25 @@ const testScenarios = [
         'Expand government healthcare programs',
         'Reduce government role in healthcare',
         '',
-        ''
-      ]
-    }
-  }
-];
+        '',
+      ],
+    },
+  },
+]
 
 export function ConflictDetectionTest() {
   const handleSubmit = async (values: any) => {
-    console.log('Form submitted:', values);
-  };
+    console.log('Form submitted:', values)
+  }
 
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="prose max-w-none mb-8">
         <h1>Conflict Detection Test Scenarios</h1>
         <p>
-          This page demonstrates the conflict detection system with various test scenarios.
-          Each scenario contains priorities that may have different types of conflicts.
+          This page demonstrates the conflict detection system with various test
+          scenarios. Each scenario contains priorities that may have different
+          types of conflicts.
         </p>
       </div>
 
@@ -103,5 +111,5 @@ export function ConflictDetectionTest() {
         ))}
       </div>
     </div>
-  );
+  )
 }

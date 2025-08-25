@@ -1,4 +1,4 @@
-import { VoterForm } from '@/components/VoterForm'
+import { VoterForm } from '@/components/pages/VoterFormPage'
 import { VoterFormValues } from '@/schemas/voterFormSchema'
 import { RecommendationsData } from '@/types/api'
 import {

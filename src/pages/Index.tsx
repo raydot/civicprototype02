@@ -11,9 +11,9 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorFallback } from '@/components/ErrorFallback'
 import { useDebugMode } from '@/utils/debugMode'
 import { createDemoRecommendations } from '@/data/demo_recs_hardcoded'
-import { SplashScreen } from '@/components/SplashScreen'
+import { SplashPage } from '@/components/pages/SplashPage'
 import { Header } from '@/components/Header'
-import { VoterForm } from '@/components/VoterForm'
+import { VoterFormPage } from '@/components/pages/VoterFormPage'
 import { ResultsPage } from '@/components/pages/ResultsPage'
 import { RecommendationsPage } from '@/components/pages/RecommendationsPage'
 
@@ -88,21 +88,30 @@ const Index = () => {
 
     try {
       // Filter out empty priorities
-      const filteredPriorities = mappedData.priorities?.filter(p => p?.trim()) || []
+      const filteredPriorities =
+        mappedData.priorities?.filter(p => p?.trim()) || []
 
       // Create hardcoded demo recommendations
       const demoRecommendations = createDemoRecommendations(filteredPriorities)
 
       // Helper function to get location data (matching ResultsPage)
       const getLocationDisplay = (zipCode: string) => {
-        const placeholderLocations: Record<string, { city: string; state: string }> = {
+        const placeholderLocations: Record<
+          string,
+          { city: string; state: string }
+        > = {
           '94102': { city: 'San Francisco', state: 'California' },
           '10001': { city: 'New York', state: 'New York' },
           '90210': { city: 'Beverly Hills', state: 'California' },
           '02101': { city: 'Boston', state: 'Massachusetts' },
           '60601': { city: 'Chicago', state: 'Illinois' },
         }
-        return placeholderLocations[zipCode] || { city: 'Anytown', state: 'Nebraska' }
+        return (
+          placeholderLocations[zipCode] || {
+            city: 'Anytown',
+            state: 'Nebraska',
+          }
+        )
       }
 
       const locationData = getLocationDisplay(mappedData.zipCode || '')
@@ -153,18 +162,18 @@ const Index = () => {
   const renderCurrentScreen = () => {
     switch (currentScreen) {
       case 'splash':
-        return <SplashScreen onGetStarted={() => setCurrentScreen('form')} />
+        return <SplashPage onGetStarted={() => setCurrentScreen('form')} />
       case 'form':
         return (
           <>
             <Header />
             <div className="p-4">
-              <VoterForm
+              <VoterFormPage
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
                 initialValues={formData || undefined}
               />
-              
+
               {/* Debug Panel - positioned near bottom */}
               {isDebugEnabled && (
                 <div className="mt-6">
@@ -179,12 +188,15 @@ const Index = () => {
                       <Bug className="h-4 w-4" />
                     </Button>
                     <Link to="/test/mapping">
-                      <Button variant="outline" className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2"
+                      >
                         Test Priority Mapping
                       </Button>
                     </Link>
                   </div>
-                  
+
                   {showDebugPanel && (
                     <DebugPanel onClose={() => setShowDebugPanel(false)} />
                   )}
@@ -196,14 +208,14 @@ const Index = () => {
       case 'results':
         return formData ? (
           <>
-            <Header 
+            <Header
               showBackButton={true}
               onBack={() => setCurrentScreen('form')}
               backButtonText="Back to Form"
             />
             <div className="p-4">
-              <ResultsPage 
-                formData={formData} 
+              <ResultsPage
+                formData={formData}
                 onGetRecommendations={handleGetRecommendations}
                 isLoading={isLoading}
               />
@@ -213,15 +225,13 @@ const Index = () => {
       case 'recommendations':
         return recommendations ? (
           <>
-            <Header 
+            <Header
               showBackButton={true}
               onBack={() => setCurrentScreen('results')}
               backButtonText="Back to Results"
             />
             <div className="p-4">
-              <RecommendationsPage 
-                recommendations={recommendations}
-              />
+              <RecommendationsPage recommendations={recommendations} />
             </div>
           </>
         ) : null

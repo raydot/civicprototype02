@@ -11,8 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { MapPin } from 'lucide-react'
-import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary'
-import { ErrorFallback } from '@/components/ErrorFallback'
+import { PageWrapper } from '@/components/ui/PageWrapper'
 import { PriorityMappingTable } from '@/components/priorities/PriorityMappingTable'
 import { usePPMEMapping } from '@/hooks/use-ppme-mapping'
 import { PPMEFeedback } from '@/types/ppme'
@@ -148,7 +147,7 @@ export const ResultsPage = ({
   }
 
   return (
-    <div className="relative space-y-4">
+    <PageWrapper componentName="ResultsPage" className="relative space-y-4">
         {(isLoading || isPPMELoading) && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 min-h-[400px]">
             <div className="text-center">
@@ -159,15 +158,6 @@ export const ResultsPage = ({
             </div>
           </div>
         )}
-
-        <ReactErrorBoundary
-          FallbackComponent={props => (
-            <ErrorFallback {...props} componentName="ResultsPage" />
-          )}
-          onReset={() => {
-            console.log('ResultsPage error boundary reset')
-          }}
-        >
           {/* Location Display */}
           <Card className="w-full shadow-sm">
             <CardContent className="py-3 px-4">
@@ -231,7 +221,6 @@ export const ResultsPage = ({
               </CardContent>
             </Card>
           )}
-        </ReactErrorBoundary>
-    </div>
+    </PageWrapper>
   )
 }
