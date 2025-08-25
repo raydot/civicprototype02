@@ -14,12 +14,15 @@ import { createDemoRecommendations } from '@/data/demo_recs_hardcoded'
 import { SplashScreen } from '@/components/SplashScreen'
 import { Header } from '@/components/Header'
 import { VoterForm } from '@/components/VoterForm'
+import { ResultsPage } from '@/components/pages/ResultsPage'
+import { RecommendationsPage } from '@/components/pages/RecommendationsPage'
 
-type CurrentScreen = 'splash' | 'form' | 'results'
+type CurrentScreen = 'splash' | 'form' | 'results' | 'recommendations'
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<CurrentScreen>('splash')
   const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState<VoterFormValues | null>(null)
   const [recommendations, setRecommendations] =
     useState<RecommendationsData | null>(null)
   const [showDebugPanel, setShowDebugPanel] = useState(false)
@@ -60,13 +63,40 @@ const Index = () => {
 
       console.log('Form submitted with values:', values)
 
+      // Store form data and move to results screen for PPME mapping
+      setFormData(values)
+      setCurrentScreen('results')
+
+      toast({
+        title: 'Form Submitted',
+        description: 'Analyzing your priorities...',
+      })
+    } catch (error) {
+      console.error('Error in handleSubmit:', error)
+      toast({
+        title: 'Error',
+        description: 'There was a problem processing your priorities.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGetRecommendations = async (mappedData: VoterFormValues) => {
+    setIsLoading(true)
+
+    try {
+      // Filter out empty priorities
+      const filteredPriorities = mappedData.priorities?.filter(p => p?.trim()) || []
+
       // Create hardcoded demo recommendations
       const demoRecommendations = createDemoRecommendations(filteredPriorities)
 
       // Create data object
       const prioritiesData: RecommendationsData = {
-        mode: values.mode || mode,
-        zipCode: values.zipCode || '',
+        mode: mappedData.mode || mode,
+        zipCode: mappedData.zipCode || '',
         region: 'United States',
         analysis: {
           priorities: filteredPriorities,
@@ -84,20 +114,19 @@ const Index = () => {
 
       console.log('Setting recommendations data:', prioritiesData)
 
-      // Set the recommendations and switch to results screen
+      // Set the recommendations and switch to recommendations screen
       setRecommendations(prioritiesData)
-      setCurrentScreen('results')
+      setCurrentScreen('recommendations')
 
       toast({
-        title: 'Analysis Complete',
-        description:
-          'Your priorities have been analyzed and recommendations are ready.',
+        title: 'Recommendations Generated',
+        description: 'Your personalized recommendations are ready.',
       })
     } catch (error) {
-      console.error('Error in handleSubmit:', error)
+      console.error('Error generating recommendations:', error)
       toast({
         title: 'Error',
-        description: 'There was a problem processing your priorities.',
+        description: 'There was a problem generating recommendations.',
         variant: 'destructive',
       })
     } finally {
@@ -108,9 +137,7 @@ const Index = () => {
   const renderCurrentScreen = () => {
     switch (currentScreen) {
       case 'splash':
-        return (
-          <SplashScreen onGetStarted={() => setCurrentScreen('form')} />
-        )
+        return <SplashScreen onGetStarted={() => setCurrentScreen('form')} />
       case 'form':
         return (
           <>
@@ -119,6 +146,7 @@ const Index = () => {
               <VoterForm
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
+                initialValues={formData || undefined}
               />
               
               {/* Debug Panel - positioned near bottom */}
@@ -150,24 +178,37 @@ const Index = () => {
           </>
         )
       case 'results':
-        return (
+        return formData ? (
           <>
-            <Header />
+            <Header 
+              showBackButton={true}
+              onBack={() => setCurrentScreen('form')}
+              backButtonText="Back to Form"
+            />
             <div className="p-4">
-              {/* Results display - will be implemented later */}
-              <div className="text-center py-8">
-                <h2 className="text-xl font-bold mb-4">Results</h2>
-                <p>Recommendations will be displayed here</p>
-                <Button 
-                  onClick={() => setCurrentScreen('form')}
-                  className="mt-4"
-                >
-                  Back to Form
-                </Button>
-              </div>
+              <ResultsPage 
+                formData={formData} 
+                onGetRecommendations={handleGetRecommendations}
+                isLoading={isLoading}
+              />
             </div>
           </>
-        )
+        ) : null
+      case 'recommendations':
+        return recommendations ? (
+          <>
+            <Header 
+              showBackButton={true}
+              onBack={() => setCurrentScreen('results')}
+              backButtonText="Back to Results"
+            />
+            <div className="p-4">
+              <RecommendationsPage 
+                recommendations={recommendations}
+              />
+            </div>
+          </>
+        ) : null
       default:
         return null
     }

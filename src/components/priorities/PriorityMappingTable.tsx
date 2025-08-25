@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Table,
   TableBody,
@@ -7,29 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Card,
+  CardContent,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  DndContext,
-  closestCenter,
-  DragEndEvent,
-  DragStartEvent,
-  DragOverlay,
-  PointerSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import {
-  GripVertical,
   ThumbsUp,
   ThumbsDown,
   HelpCircle,
@@ -67,21 +53,9 @@ export function PriorityMappingTable({
     PPMEMappedPriority[]
   >([])
   const [isEditing, setIsEditing] = useState(false)
+  const [editedIndices, setEditedIndices] = useState<Set<number>>(new Set())
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<Set<string>>(
     new Set()
-  )
-  const [activeId, setActiveId] = useState<string | null>(null)
-
-  // Configure sensors for better drag experience
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // Require 8px movement before drag starts
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
   )
 
   // Initialize edited priorities and reordered mapped priorities
@@ -96,179 +70,28 @@ export function PriorityMappingTable({
     const newEditedPriorities = [...editedPriorities]
     newEditedPriorities[index] = newValue
     setEditedPriorities(newEditedPriorities)
-    setIsEditing(true)
+    
+    const originalValue = mappedPriorities[index]?.original
+    if (newValue !== originalValue) {
+      setEditedIndices(prev => new Set(prev).add(index))
+      setIsEditing(true)
+    } else {
+      setEditedIndices(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(index)
+        return newSet
+      })
+    }
   }
 
   const handleUpdatePriorities = () => {
     onUpdatePriorities(editedPriorities)
     setIsEditing(false)
+    setEditedIndices(new Set())
   }
 
-  // Sortable row component
-  const SortableRow = ({
-    priority,
-    index,
-  }: {
-    priority: PPMEMappedPriority
-    index: number
-  }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id: `priority-row-${index}` })
 
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      opacity: isDragging ? 0.4 : 1,
-      zIndex: isDragging ? 1000 : 'auto',
-    }
 
-    return (
-      <TableRow
-        ref={setNodeRef}
-        style={style}
-        className={cn(
-          'hover:bg-muted/30 transition-all duration-200',
-          priority.needsClarification &&
-            'bg-yellow-50 border-l-4 border-l-yellow-400',
-          priority.confidence >= 0.8 && 'border-l-2 border-l-green-300',
-          priority.confidence < 0.6 && 'border-l-2 border-l-red-300',
-          isDragging && 'shadow-lg border-2 border-blue-300 bg-white'
-        )}
-      >
-        <TableCell className="p-0 w-12">
-          <div className="flex flex-col items-center gap-1">
-            <div
-              {...attributes}
-              {...listeners}
-              className={cn(
-                'flex items-center justify-center p-2 rounded transition-all duration-200',
-                'cursor-grab hover:cursor-grabbing hover:bg-muted/50',
-                'active:cursor-grabbing active:scale-110',
-                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
-              )}
-              tabIndex={-1}
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
-            </div>
-            {priority.needsClarification && (
-              <AlertCircle className="h-3 w-3 text-yellow-600" />
-            )}
-          </div>
-        </TableCell>
-        <TableCell className="p-2">
-          <div className="space-y-1">
-            <Input
-              key={`input-${index}-${priority.original}`}
-              value={editedPriorities[index] || priority.original}
-              onChange={e => handleEditPriority(index, e.target.value)}
-              className="w-full h-8 text-sm"
-              placeholder="Describe your priority..."
-              tabIndex={index + 1}
-            />
-            <div className="text-xs text-muted-foreground">
-              Priority #{index + 1}
-            </div>
-          </div>
-        </TableCell>
-        <TableCell className="p-2">{renderMappingDisplay(priority)}</TableCell>
-        <TableCell className="p-2 text-center">
-          {renderConfidenceIndicator(priority.confidence)}
-        </TableCell>
-        <TableCell className="p-2">
-          <div className="flex justify-center">
-            {renderFeedbackButtons(priority)}
-          </div>
-        </TableCell>
-      </TableRow>
-    )
-  }
-
-  // Drag overlay component for smooth visual feedback
-  const DragOverlayRow = ({
-    priority,
-    index,
-  }: {
-    priority: PPMEMappedPriority
-    index: number
-  }) => (
-    <div className="bg-white shadow-2xl border-2 border-blue-400 rounded-lg overflow-hidden opacity-95 transform rotate-2">
-      <Table>
-        <TableBody>
-          <TableRow className="bg-blue-50">
-            <TableCell className="p-0 w-12">
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center justify-center p-2">
-                  <GripVertical className="h-4 w-4 text-blue-600" />
-                </div>
-                {priority.needsClarification && (
-                  <AlertCircle className="h-3 w-3 text-yellow-600" />
-                )}
-              </div>
-            </TableCell>
-            <TableCell className="p-2">
-              <div className="space-y-1">
-                <Input
-                  value={editedPriorities[index] || priority.original}
-                  className="w-full h-8 text-sm pointer-events-none"
-                  readOnly
-                />
-                <div className="text-xs text-muted-foreground">
-                  Priority #{index + 1}
-                </div>
-              </div>
-            </TableCell>
-            <TableCell className="p-2">
-              {renderMappingDisplay(priority)}
-            </TableCell>
-            <TableCell className="p-2 text-center">
-              {renderConfidenceIndicator(priority.confidence)}
-            </TableCell>
-            <TableCell className="p-2">
-              <div className="flex justify-center">
-                {renderFeedbackButtons(priority)}
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
-  )
-
-  // Handle drag start
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string)
-  }
-
-  // Handle drag and drop reordering
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    setActiveId(null)
-
-    if (over && active.id !== over.id) {
-      const oldIndex = parseInt(active.id.toString().split('-')[2])
-      const newIndex = parseInt(over.id.toString().split('-')[2])
-
-      // Reorder both the edited priorities and mapped priorities arrays
-      const newEditedPriorities = Array.from(editedPriorities)
-      const [reorderedEditedItem] = newEditedPriorities.splice(oldIndex, 1)
-      newEditedPriorities.splice(newIndex, 0, reorderedEditedItem)
-
-      const newMappedPriorities = Array.from(reorderedMappedPriorities)
-      const [reorderedMappedItem] = newMappedPriorities.splice(oldIndex, 1)
-      newMappedPriorities.splice(newIndex, 0, reorderedMappedItem)
-
-      setEditedPriorities(newEditedPriorities)
-      setReorderedMappedPriorities(newMappedPriorities)
-      setIsEditing(true)
-    }
-  }
 
   // Render enhanced confidence indicator with icons
   const renderConfidenceIndicator = (confidence: number) => {
@@ -339,101 +162,6 @@ export function PriorityMappingTable({
     )
   }
 
-  // Enhanced mapping display with better structure
-  const renderMappingDisplay = (priority: PPMEMappedPriority) => {
-    const confidenceStyles =
-      priority.confidence >= 0.8
-        ? 'border-green-200 bg-green-50'
-        : priority.confidence >= 0.6
-          ? 'border-yellow-200 bg-yellow-50'
-          : 'border-red-200 bg-red-50'
-
-    return (
-      <div
-        className={cn(
-          'space-y-2 p-2 rounded-md border transition-all duration-200',
-          confidenceStyles
-        )}
-      >
-        {/* Standard Policy Term */}
-        <div className="space-y-1">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Policy Term
-          </div>
-          <div className="font-semibold text-sm text-gray-900">
-            {priority.standardTerm}
-          </div>
-        </div>
-
-        {/* Plain English Explanation */}
-        <div className="space-y-1">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            What This Means
-          </div>
-          <div className="text-sm text-gray-700 leading-relaxed">
-            {priority.plainEnglish}
-          </div>
-        </div>
-
-        {/* Reasoning (if available) */}
-        {priority.reasoning && (
-          <div className="space-y-1">
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              Why This Match
-            </div>
-            <div className="text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-200">
-              {priority.reasoning}
-            </div>
-          </div>
-        )}
-
-        {/* Term ID for debugging in dev mode */}
-        {process.env.NODE_ENV === 'development' && priority.termId && (
-          <div className="text-xs text-gray-400 font-mono">
-            ID: {priority.termId}
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  // Render feedback buttons
-  const renderFeedbackButtons = (priority: PPMEMappedPriority) => {
-    const hasSubmittedFeedback = feedbackSubmitted.has(priority.original)
-
-    return (
-      <div className="flex items-center gap-1">
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-6 w-6 p-0"
-          onClick={() => handleFeedback(priority, 'thumbs_up')}
-          disabled={hasSubmittedFeedback}
-        >
-          <ThumbsUp className="h-3 w-3" />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-6 w-6 p-0"
-          onClick={() => handleFeedback(priority, 'thumbs_down')}
-          disabled={hasSubmittedFeedback}
-        >
-          <ThumbsDown className="h-3 w-3" />
-        </Button>
-        {priority.needsClarification && (
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 w-6 p-0"
-            onClick={() => handleClarification(priority)}
-          >
-            <HelpCircle className="h-3 w-3" />
-          </Button>
-        )}
-      </div>
-    )
-  }
 
   // Handle feedback submission
   const handleFeedback = (
@@ -460,92 +188,176 @@ export function PriorityMappingTable({
     onGetClarification(priority.original)
   }
 
-  return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      collisionDetection={closestCenter}
-    >
-      <SortableContext
-        items={reorderedMappedPriorities.map(
-          (_, index) => `priority-row-${index}`
-        )}
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="space-y-2">
+  // Individual Priority Card Component
+  const PriorityCard = ({
+    priority,
+    index,
+  }: {
+    priority: PPMEMappedPriority
+    index: number
+  }) => {
+    const hasSubmittedFeedback = feedbackSubmitted.has(priority.original)
+    const hasBeenEdited = editedIndices.has(index)
+
+    return (
+      <Card className="w-full shadow-md border-2 border-gray-200 rounded-lg bg-white">
+        <CardContent className="p-0">
           <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-12"></TableHead>
-                <TableHead className="w-1/4 py-2 text-xs font-medium">
-                  Your Priority
-                </TableHead>
-                <TableHead className="w-2/5 py-2 text-xs font-medium">
-                  Policy Mapping
-                </TableHead>
-                <TableHead className="w-24 py-2 text-xs font-medium text-center">
-                  Match Quality
-                </TableHead>
-                <TableHead className="w-20 py-2 text-xs font-medium text-center">
-                  Feedback
-                </TableHead>
-              </TableRow>
-            </TableHeader>
             <TableBody>
-              {reorderedMappedPriorities.map((priority, index) => (
-                <SortableRow
-                  key={`priority-row-${index}`}
-                  priority={priority}
-                  index={index}
-                />
-              ))}
+              {/* Row 1: Priority # and Editable Input */}
+              <TableRow className="border-b border-gray-100">
+                <TableCell className="py-3 px-4 font-medium text-sm w-1/3 align-middle">
+                  Priority #{index + 1}
+                </TableCell>
+                <TableCell className="py-3 px-4 align-middle">
+                  <div className="space-y-2">
+                    <Textarea
+                      value={editedPriorities[index] || priority.original}
+                      onChange={(e) => handleEditPriority(index, e.target.value)}
+                      className="w-full min-h-[2rem] text-sm resize-none"
+                      placeholder="Describe your priority..."
+                      rows={2}
+                    />
+                    {hasBeenEdited && (
+                      <Button
+                        size="sm"
+                        onClick={handleUpdatePriorities}
+                        disabled={isUpdating}
+                        className="h-7 text-xs bg-blue-600 hover:bg-blue-700"
+                      >
+                        {isUpdating ? 'Updating...' : 'Update This Priority'}
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+
+              {/* Row 2: Policy Term with Help Icon */}
+              <TableRow className="border-b border-gray-100">
+                <TableCell className="py-3 px-4 font-medium text-sm align-middle">
+                  Policy Term
+                </TableCell>
+                <TableCell className="py-3 px-4 align-middle">
+                  <div className="flex items-start justify-between">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">
+                      {priority.standardTerm}
+                    </div>
+                    {priority.needsClarification && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 ml-2"
+                        onClick={() => handleClarification(priority)}
+                        title="See suggested terms"
+                      >
+                        <HelpCircle className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+
+              {/* Row 3: Why This Match */}
+              <TableRow className="border-b border-gray-100">
+                <TableCell className="py-3 px-4 font-medium text-sm align-middle">
+                  Why This Match
+                </TableCell>
+                <TableCell className="py-3 px-4 align-middle">
+                  {priority.reasoning && (
+                    <div className="text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-200">
+                      {priority.reasoning}
+                    </div>
+                  )}
+                </TableCell>
+              </TableRow>
+
+              {/* Row 4: Match Quality - User Feedback for Reinforcement Learning */}
+              <TableRow>
+                <TableCell className="py-3 px-4 font-medium text-sm align-middle">
+                  Match Quality
+                </TableCell>
+                <TableCell className="py-3 px-4 align-middle">
+                  <div className="space-y-2">
+                    <div className="text-xs text-gray-600">
+                      Do you agree with this match?
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant={hasSubmittedFeedback ? "secondary" : "outline"}
+                        className="h-8 px-3 text-xs"
+                        onClick={() => handleFeedback(priority, 'thumbs_up')}
+                        disabled={hasSubmittedFeedback}
+                      >
+                        <ThumbsUp className="h-3 w-3 mr-1" />
+                        Agree
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={hasSubmittedFeedback ? "secondary" : "outline"}
+                        className="h-8 px-3 text-xs"
+                        onClick={() => handleFeedback(priority, 'thumbs_down')}
+                        disabled={hasSubmittedFeedback}
+                      >
+                        <ThumbsDown className="h-3 w-3 mr-1" />
+                        Disagree
+                      </Button>
+                      {hasSubmittedFeedback && (
+                        <span className="text-xs text-green-600 ml-2">
+                          ✓ Feedback submitted
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+    )
+  }
 
-          {isEditing && (
-            <div className="flex justify-between items-center">
-              <div className="text-xs text-muted-foreground">
-                Changes will trigger re-analysis of your priorities
-              </div>
-              <Button
-                onClick={handleUpdatePriorities}
-                disabled={isUpdating}
-                size="sm"
-                className="h-8 text-xs"
-              >
-                {isUpdating ? 'Updating...' : 'Update Mapping'}
-              </Button>
-            </div>
-          )}
+  return (
+    <div className="space-y-6">
+      {reorderedMappedPriorities.map((priority, index) => (
+        <PriorityCard
+          key={`priority-card-${index}`}
+          priority={priority}
+          index={index}
+        />
+      ))}
 
-          {reorderedMappedPriorities.some(p => p.needsClarification) && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-              <div className="flex items-center gap-2 text-sm text-yellow-800">
-                <AlertCircle className="h-4 w-4" />
-                <span className="font-medium">
-                  Some priorities need clarification
-                </span>
-              </div>
-              <p className="text-xs text-yellow-700 mt-1">
-                Items marked with ⚠️ have low confidence mappings. Use the help
-                button to see alternative options.
-              </p>
-            </div>
-          )}
+      {isEditing && (
+        <div className="flex justify-between items-center">
+          <div className="text-xs text-muted-foreground">
+            Changes will trigger re-analysis of your priorities
+          </div>
+          <Button
+            onClick={handleUpdatePriorities}
+            disabled={isUpdating}
+            size="sm"
+            className="h-8 text-xs"
+          >
+            {isUpdating ? 'Updating...' : 'Update Mapping'}
+          </Button>
         </div>
-      </SortableContext>
+      )}
 
-      <DragOverlay>
-        {activeId ? (
-          <DragOverlayRow
-            priority={
-              reorderedMappedPriorities[parseInt(activeId.split('-')[2])]
-            }
-            index={parseInt(activeId.split('-')[2])}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+      {reorderedMappedPriorities.some(p => p.needsClarification) && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+          <div className="flex items-center gap-2 text-sm text-yellow-800">
+            <AlertCircle className="h-4 w-4" />
+            <span className="font-medium">
+              Some priorities need clarification
+            </span>
+          </div>
+          <p className="text-xs text-yellow-700 mt-1">
+            Items marked with ⚠️ have low confidence mappings. Use the help
+            button to see alternative options.
+          </p>
+        </div>
+      )}
+    </div>
   )
 }

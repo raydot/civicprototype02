@@ -100,18 +100,20 @@ interface VoterFormProps {
   onSubmit: (values: VoterFormValues) => void
   isLoading?: boolean
   onRandomZipCode?: (zipCode: string) => void
+  initialValues?: Partial<VoterFormValues>
 }
 
 export function VoterForm({
   onSubmit,
   isLoading = false,
   onRandomZipCode,
+  initialValues,
 }: VoterFormProps) {
   const form = useForm<VoterFormValues>({
     resolver: zodResolver(VoterFormSchema),
     defaultValues: {
-      zipCode: '',
-      priorities: ['', '', '', '', '', ''],
+      zipCode: initialValues?.zipCode || '',
+      priorities: initialValues?.priorities || ['', '', '', '', '', ''],
     },
   })
 
