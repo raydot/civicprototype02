@@ -1,16 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import React, { useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorFallback } from '@/components/ErrorFallback'
@@ -32,16 +22,26 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical } from 'lucide-react'
 import { useDebugMode } from '@/utils/debugMode'
 
-// Define a schema just for priorities
-const PrioritiesSchema = z.object({
+// Define schema for ZIP code and priorities
+const VoterFormSchema = z.object({
+  zipCode: z.string().min(5, 'ZIP code is required').max(10, 'Invalid ZIP code'),
   priorities: z.array(z.string()).min(1, 'At least one priority is required'),
 })
 
+// Custom drag handle component - styled as dots like wireframe
+const DragHandle = () => (
+  <div className="flex flex-col gap-1 p-2">
+    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+    <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+  </div>
+)
+
 // Move SortableItem outside the main component to prevent recreation
-const SortableItem = React.memo(({ id, index, form }: { id: string; index: number; form: any }) => {
+const SortableItem = React.memo(({ id, index, form, errors }: { id: string; index: number; form: any; errors: any }) => {
   console.log(`SortableItem ${index} rendering`)
   
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -54,6 +54,9 @@ const SortableItem = React.memo(({ id, index, form }: { id: string; index: numbe
     zIndex: isDragging ? 1000 : 'auto',
   }
 
+  const fieldName = `priorities.${index}`
+  const hasError = errors?.priorities?.[index]
+
   return (
     <div
       ref={setNodeRef}
@@ -63,31 +66,27 @@ const SortableItem = React.memo(({ id, index, form }: { id: string; index: numbe
       <div
         {...attributes}
         {...listeners}
-        className="px-2 py-1 self-stretch flex items-center cursor-grab hover:cursor-grabbing hover:bg-muted/50 rounded transition-all duration-200 active:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className="cursor-grab hover:cursor-grabbing hover:bg-gray-50 rounded transition-all duration-200 active:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         tabIndex={-1}
       >
-        <GripVertical className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+        <DragHandle />
       </div>
-      <FormField
-        control={form.control}
-        name={`priorities.${index}`}
-        render={({ field }) => (
-          <FormItem className="flex-1 space-y-0">
-            <FormControl>
-              <Input
-                placeholder={`Priority ${parseInt(id.split('-')[1]) + 1}`}
-                className="h-9"
-                tabIndex={index + 1}
-                onFocus={() => console.log(`Input ${index} focused`)}
-                onBlur={() => console.log(`Input ${index} blurred`)}
-                onKeyDown={(e) => console.log(`Input ${index} keydown:`, e.key)}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+      <div className="flex-1">
+        <input
+          {...form.register(fieldName)}
+          placeholder="Start typing here..."
+          className={`w-full px-4 py-3 border rounded text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            hasError ? 'border-red-500' : 'border-black'
+          }`}
+          tabIndex={index + 2}
+          onFocus={() => console.log(`Input ${index} focused`)}
+          onBlur={() => console.log(`Input ${index} blurred`)}
+          onKeyDown={(e) => console.log(`Input ${index} keydown:`, e.key)}
+        />
+        {hasError && (
+          <p className="text-red-500 text-xs mt-1">{hasError.message}</p>
         )}
-      />
+      </div>
     </div>
   )
 }, (prevProps, nextProps) => {
@@ -95,10 +94,10 @@ const SortableItem = React.memo(({ id, index, form }: { id: string; index: numbe
   return prevProps.id === nextProps.id && prevProps.index === nextProps.index
 })
 
-type PrioritiesFormValues = z.infer<typeof PrioritiesSchema>
+type VoterFormValues = z.infer<typeof VoterFormSchema>
 
 interface VoterFormProps {
-  onSubmit: (values: any) => void
+  onSubmit: (values: VoterFormValues) => void
   isLoading?: boolean
   onRandomZipCode?: (zipCode: string) => void
 }
@@ -108,12 +107,15 @@ export function VoterForm({
   isLoading = false,
   onRandomZipCode,
 }: VoterFormProps) {
-  const form = useForm<PrioritiesFormValues>({
-    resolver: zodResolver(PrioritiesSchema),
+  const form = useForm<VoterFormValues>({
+    resolver: zodResolver(VoterFormSchema),
     defaultValues: {
+      zipCode: '',
       priorities: ['', '', '', '', '', ''],
     },
   })
+
+  const { formState: { errors } } = form
 
   const { isEnabled: isDebugEnabled } = useDebugMode()
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -206,7 +208,8 @@ export function VoterForm({
     const randomZip =
       randomZipCodes[Math.floor(Math.random() * randomZipCodes.length)]
 
-    // Call the callback to update ZIP code in parent component
+    // Set ZIP code in form and call callback
+    form.setValue('zipCode', randomZip)
     if (onRandomZipCode) {
       onRandomZipCode(randomZip)
     }
@@ -226,16 +229,14 @@ export function VoterForm({
     const currentValues = form.getValues('priorities')
     // Find the current position of this original index in the itemOrder array
     const currentPosition = itemOrder.findIndex(index => index === originalIndex)
-    const displayValue = currentValues[currentPosition] || `Priority ${originalIndex + 1}`
+    const displayValue = currentValues[currentPosition] || 'Start typing here...'
     
     return (
       <div className="bg-white shadow-2xl border-2 border-blue-400 rounded-lg overflow-hidden opacity-95 transform rotate-2 flex items-center gap-1 p-2">
-        <div className="px-2 py-1 flex items-center">
-          <GripVertical className="h-4 w-4 text-blue-600" />
-        </div>
-        <Input
+        <DragHandle />
+        <input
           value={displayValue}
-          className="h-9 pointer-events-none flex-1"
+          className="flex-1 px-4 py-3 border border-black rounded text-sm pointer-events-none"
           readOnly
         />
       </div>
@@ -283,13 +284,33 @@ export function VoterForm({
         <ErrorFallback {...props} componentName="VoterForm" />
       )}
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <div className="bg-white">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* ZIP Code Section */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <FormLabel className="text-base">
-                Your Top Priorities (drag to reorder)
-              </FormLabel>
+            <label className="block text-base font-normal text-black">
+              Enter Zip Code
+            </label>
+            <input
+              {...form.register('zipCode')}
+              placeholder="#####"
+              className={`w-full px-4 py-3 border rounded text-sm text-center placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.zipCode ? 'border-red-500' : 'border-black'
+              }`}
+              tabIndex={1}
+            />
+            {errors.zipCode && (
+              <p className="text-red-500 text-xs">{errors.zipCode.message}</p>
+            )}
+          </div>
+
+          {/* Priorities Section */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-base font-bold text-black">Priorities</h2>
+              <p className="text-base text-black leading-relaxed">
+                Tell us what matters to you most and we'll suggest civic actions that align with your values.
+              </p>
             </div>
 
             <DndContext
@@ -302,13 +323,14 @@ export function VoterForm({
                 items={itemOrder.map(i => `priority-${i}`)}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {itemOrder.map((originalIndex, currentIndex) => (
                     <SortableItem
                       key={`priority-${originalIndex}`}
                       id={`priority-${originalIndex}`}
                       index={currentIndex}
                       form={form}
+                      errors={errors}
                     />
                   ))}
                 </div>
@@ -322,24 +344,27 @@ export function VoterForm({
             </DndContext>
           </div>
 
-          <div className="flex justify-between gap-2">
+          {/* Submit Section */}
+          <div className="flex justify-between items-center gap-2">
             {isDebugEnabled && (
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                size="sm"
-                className="h-9 text-sm"
+                className="px-4 py-2 border border-gray-300 rounded text-sm bg-white hover:bg-gray-50 transition-colors"
                 onClick={handleRandomPriorities}
               >
                 Random
-              </Button>
+              </button>
             )}
-            <Button type="submit" className="h-9 text-sm" disabled={isLoading}>
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="flex-1 px-4 py-3 bg-gray-200 text-black rounded text-sm font-normal hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
               {isLoading ? 'Analyzing...' : 'Submit'}
-            </Button>
+            </button>
           </div>
         </form>
-      </Form>
+      </div>
     </ErrorBoundary>
   )
 }
