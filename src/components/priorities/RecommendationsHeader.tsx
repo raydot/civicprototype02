@@ -41,25 +41,10 @@ export const RecommendationsHeader = ({
           </p>
         )}
         <p className="text-sm text-muted-foreground">
-          For ZIP Code: <span className="font-medium">{recommendationsData.zipCode}</span> • Region: <span className="font-medium">{recommendationsData.region}</span>
+          <span className="font-medium">{recommendationsData.city}, {recommendationsData.state}</span>
+          <span className="text-muted-foreground ml-2">{recommendationsData.zipCode}</span>
         </p>
         
-        <div className="flex flex-wrap gap-2 mt-4">
-          {recommendationsData.analysis.priorities.map((priority, index) => (
-            <div
-              key={index}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm"
-            >
-              {priority}
-              <button
-                onClick={() => onRemovePriority(priority)}
-                className="hover:text-destructive"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

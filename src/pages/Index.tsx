@@ -93,10 +93,26 @@ const Index = () => {
       // Create hardcoded demo recommendations
       const demoRecommendations = createDemoRecommendations(filteredPriorities)
 
+      // Helper function to get location data (matching ResultsPage)
+      const getLocationDisplay = (zipCode: string) => {
+        const placeholderLocations: Record<string, { city: string; state: string }> = {
+          '94102': { city: 'San Francisco', state: 'California' },
+          '10001': { city: 'New York', state: 'New York' },
+          '90210': { city: 'Beverly Hills', state: 'California' },
+          '02101': { city: 'Boston', state: 'Massachusetts' },
+          '60601': { city: 'Chicago', state: 'Illinois' },
+        }
+        return placeholderLocations[zipCode] || { city: 'Anytown', state: 'Nebraska' }
+      }
+
+      const locationData = getLocationDisplay(mappedData.zipCode || '')
+
       // Create data object
       const prioritiesData: RecommendationsData = {
         mode: mappedData.mode || mode,
         zipCode: mappedData.zipCode || '',
+        city: locationData.city,
+        state: locationData.state,
         region: 'United States',
         analysis: {
           priorities: filteredPriorities,

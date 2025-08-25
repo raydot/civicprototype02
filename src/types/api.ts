@@ -112,6 +112,8 @@ export interface Recommendations {
 export interface RecommendationsData {
   mode: Mode;
   zipCode: string;
+  city?: string;
+  state?: string;
   region: string;
   analysis: {
     priorities: string[];

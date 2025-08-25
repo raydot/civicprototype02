@@ -33,25 +33,12 @@ export const RecommendationsPage = ({
           console.log('RecommendationsPage error boundary reset')
         }}
       >
-        <Card className="w-full shadow-sm">
-          <CardHeader className="py-3 px-4">
-            <CardTitle className="text-base">
-              Your Recommendations
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Based on your priorities, here are your personalized
-              recommendations.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            <RecommendationsViewer
-              recommendations={recommendations}
-              mode={mode}
-              onUpdatePriorities={onUpdatePriorities}
-              isUpdating={isUpdating}
-            />
-          </CardContent>
-        </Card>
+        <RecommendationsViewer
+          recommendations={recommendations}
+          mode={mode}
+          onUpdatePriorities={onUpdatePriorities}
+          isUpdating={isUpdating}
+        />
       </ReactErrorBoundary>
     </div>
   )
